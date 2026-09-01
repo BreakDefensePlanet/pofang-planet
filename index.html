@@ -203,6 +203,14 @@
   .gacha { display: flex; gap: 30px; flex-wrap: wrap; }
   .gacha-left { flex: 1.1; min-width: 280px; }
   .gacha-right { flex: 1; min-width: 260px; }
+  /* 转盘 */
+  .wheel-wrap { position: relative; width: 360px; height: 360px; margin: 0 auto; max-width: 100%; }
+  .wheel-spin { width: 360px; height: 360px; max-width: 100%; transition: transform 4s cubic-bezier(.15,.7,.15,1); }
+  .wheel-spin canvas { display: block; width: 100%; height: 100%; }
+  .wheel-pointer {
+    position: absolute; top: -6px; left: 50%; transform: translateX(-50%);
+    font-size: 30px; color: var(--pink); z-index: 5; text-shadow: 0 2px 8px rgba(255,61,113,.6);
+  }
   .box-row { display: flex; flex-wrap: wrap; gap: 14px; }
   .box {
     width: 88px; height: 88px; border-radius: 16px; cursor: pointer;
@@ -331,7 +339,7 @@
     <a href="#quiz">破防测试</a>
     <a href="#wall">树洞</a>
     <a href="#forum">论坛</a>
-    <a href="#gacha">盲盒</a>
+    <a href="#gacha">抽奖</a>
     <a href="#bottle">漂流瓶</a>
   </div>
 </nav>
@@ -457,23 +465,30 @@
   </div>
 </section>
 
-<!-- 破防盲盒机 -->
+<!-- 破防抽奖机 -->
 <section id="gacha">
   <div class="sec-title">
-    <h2><span class="g">破</span><span class="p">防</span><span class="y">盲</span><span class="g">盒</span><span class="p">机</span></h2>
-    <p>每天 3 次免费抽 · 集齐款式解锁成就 · 隐藏款有实体周边</p>
+    <h2><span class="g">破</span><span class="p">防</span><span class="y">抽</span><span class="g">奖</span><span class="p">机</span></h2>
+    <p>每天 3 次免费抽 · 转盘抽奖 · 可抽中实体盲盒兑换券</p>
   </div>
   <div class="card gacha">
     <div class="gacha-left">
-      <div class="box-row" id="boxRow"></div>
-      <p class="gacha-tip">🎁 点击盒子抽取 · 今日剩余 <b id="gachaLeft">3</b> 次</p>
-      <button class="btn pink" onclick="resetGachaDemo()" style="font-size:13px;padding:8px 22px;margin-top:10px;">🔄 演示：重置次数</button>
+      <div class="wheel-wrap">
+        <div class="wheel-pointer">▼</div>
+        <div class="wheel-spin" id="wheelSpin"><canvas id="wheel" width="360" height="360"></canvas></div>
+      </div>
+      <div class="row" style="justify-content:center;margin-top:14px;">
+        <button class="btn pink" onclick="spinWheel()">🎰 开始抽奖</button>
+        <button class="btn" onclick="resetGachaDemo()" style="font-size:13px;padding:8px 22px;background:#1A2029;color:var(--text);border:1px solid #2A3442;">🔄 演示重置</button>
+      </div>
+      <p class="gacha-tip" style="text-align:center;">🎯 今日剩余 <b id="gachaLeft">3</b> 次 · 集齐款式解锁成就</p>
+      <p style="text-align:center;color:#4A5666;font-size:11px;margin-top:6px;">📋 中奖概率：语录25% / 安慰卡20% / 摸鱼券15% / 免骂券12% / 老板沉默10% / 徽章8% / 书签券5% / 公仔盲盒券5%</p>
     </div>
     <div class="gacha-right">
       <div class="prize-card" id="prizeCard">
-        <div class="prize-emoji">🎁</div>
-        <div class="prize-name">点击盒子，看看今天的运气</div>
-        <div class="prize-desc">每天 3 次免费，次日刷新</div>
+        <div class="prize-emoji">🎰</div>
+        <div class="prize-name">转动转盘，看看今天的运气</div>
+        <div class="prize-desc">每天 3 次免费 · 隐藏款是实体盲盒兑换券！</div>
       </div>
     </div>
   </div>
@@ -926,13 +941,14 @@ renderForum();
 
 // ================= 破防盲盒机 =================
 const PRIZES = [
-  { id: 'n1', name: '破防语录·随缘款', emoji: '💢', rarity: 'normal', weight: 30, desc: '随机一条扎心语录，适合深夜emo配图。' },
-  { id: 'n2', name: '安慰卡·人间值得', emoji: '🫂', rarity: 'normal', weight: 25, desc: '一张温柔的安慰，收藏备用。' },
-  { id: 'n3', name: '摸鱼券·一小时', emoji: '🐟', rarity: 'normal', weight: 20, desc: '下次想摸鱼时出示，效果随缘。' },
-  { id: 'r1', name: '今日免骂券', emoji: '🎫', rarity: 'rare', weight: 12, desc: '今天谁骂你都免疫，包括你自己。' },
+  { id: 'n1', name: '破防语录', emoji: '💢', rarity: 'normal', weight: 25, desc: '随机一条扎心语录，适合深夜emo配图。' },
+  { id: 'n2', name: '安慰卡', emoji: '🫂', rarity: 'normal', weight: 20, desc: '一张温柔的安慰，收藏备用。' },
+  { id: 'n3', name: '摸鱼券', emoji: '🐟', rarity: 'normal', weight: 15, desc: '下次想摸鱼时出示，效果随缘。' },
+  { id: 'r1', name: '免骂券', emoji: '🎫', rarity: 'rare', weight: 12, desc: '今天谁骂你都免疫，包括你自己。' },
   { id: 'r2', name: '老板の沉默', emoji: '🤐', rarity: 'rare', weight: 10, desc: '让老板闭嘴一小时（做梦）。' },
-  { id: 'e1', name: '破防星人认证徽章', emoji: '🏅', rarity: 'epic', weight: 2, desc: '资深破防玩家的身份证明。' },
-  { id: 'h1', name: '实体周边·手写书法书签', emoji: '🎁', rarity: 'hidden', weight: 1, desc: '隐藏款！破防星球×书法文创：手写书签一枚，加微信【你的微信】兑换/购买。' },
+  { id: 'e1', name: '破防徽章', emoji: '🏅', rarity: 'epic', weight: 8, desc: '资深破防玩家的身份证明。' },
+  { id: 'h1', name: '书法书签兑换券', emoji: '🖌️', rarity: 'hidden', weight: 5, desc: '实体券！凭兑换码加微信领手写书法书签一枚（包邮）。' },
+  { id: 'h2', name: '公仔盲盒兑换券', emoji: '📦', rarity: 'hidden', weight: 5, desc: '实体券！凭兑换码免费兑换公仔盲盒一个（商城39.9元档）！' },
 ];
 const DAILY_LIMIT = 3;
 
@@ -952,16 +968,47 @@ function weightedPick() {
   return PRIZES[0];
 }
 
-function renderBoxes() {
-  const row = document.getElementById('boxRow');
-  row.innerHTML = '';
-  for (let i = 0; i < 6; i++) {
-    const d = document.createElement('div');
-    d.className = 'box';
-    d.textContent = '🎁';
-    d.onclick = () => openBox(d);
-    row.appendChild(d);
+function drawWheel() {
+  const c = document.getElementById('wheel');
+  if (!c) return;
+  const ctx = c.getContext('2d');
+  const n = PRIZES.length;
+  const cx = 180, cy = 180, r = 168;
+  ctx.clearRect(0, 0, 360, 360);
+  const colors = ['#232B38', '#1A2029', '#232B38', '#1A2029', '#232B38', '#1A2029', '#2A2410', '#2A2410'];
+  for (let i = 0; i < n; i++) {
+    const start = ((i * 45 - 90) * Math.PI) / 180;
+    const end = (((i + 1) * 45 - 90) * Math.PI) / 180;
+    ctx.beginPath();
+    ctx.moveTo(cx, cy);
+    ctx.arc(cx, cy, r, start, end);
+    ctx.closePath();
+    ctx.fillStyle = colors[i % colors.length];
+    ctx.fill();
+    ctx.strokeStyle = '#0B0E13';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+    const mid = (start + end) / 2;
+    ctx.save();
+    ctx.translate(cx, cy);
+    ctx.rotate(mid);
+    ctx.textAlign = 'right';
+    ctx.fillStyle = '#E8EDF2';
+    ctx.font = '15px "Microsoft YaHei"';
+    ctx.fillText(PRIZES[i].emoji, r - 10, 6);
+    ctx.font = '12px "Microsoft YaHei"';
+    ctx.fillText(PRIZES[i].name, r - 32, 6);
+    ctx.restore();
   }
+  ctx.beginPath();
+  ctx.arc(cx, cy, 28, 0, Math.PI * 2);
+  ctx.fillStyle = '#0E7C66';
+  ctx.fill();
+  ctx.fillStyle = '#fff';
+  ctx.font = 'bold 14px "Microsoft YaHei"';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText('GO', cx, cy);
 }
 function renderCollection() {
   const st = getGachaState();
@@ -976,46 +1023,64 @@ function renderCollection() {
   box.innerHTML = html;
   document.getElementById('gachaLeft').textContent = st.left;
 }
-function openBox(el) {
+let wheelAngle = 0;
+let spinning = false;
+function spinWheel() {
   const st = getGachaState();
+  if (spinning) return;
   if (st.left <= 0) {
     document.getElementById('prizeCard').innerHTML =
       '<div class="prize-emoji">😭</div><div class="prize-name">今天的运气用完了</div>' +
       '<div class="prize-desc">明天再来，或者去论坛看看别人抽到了啥</div>';
     return;
   }
-  el.classList.add('shaking');
-  el.textContent = '❓';
+  spinning = true;
+  const p = weightedPick();
+  const idx = PRIZES.indexOf(p);
+  const base = 360 - (idx * 45 + 22.5);
+  const jitter = Math.random() * 16 - 8;
+  wheelAngle += 360 * 4 + ((base + jitter - wheelAngle % 360) % 360 + 360) % 360;
+  const el = document.getElementById('wheelSpin');
+  el.style.transform = 'rotate(' + wheelAngle + 'deg)';
+  st.left--;
+  saveGachaState(st);
+  document.getElementById('gachaLeft').textContent = st.left;
   setTimeout(() => {
-    st.left--;
-    const p = weightedPick();
-    st.coll[p.id] = (st.coll[p.id] || 0) + 1;
-    saveGachaState(st);
-    el.classList.remove('shaking');
-    el.classList.add('opened');
-    el.textContent = p.emoji;
-    const card = document.getElementById('prizeCard');
-    card.className = 'prize-card got';
-    const rarName = { normal: '普通款', rare: '稀有款', epic: '史诗款', hidden: '隐藏款' }[p.rarity];
-    card.innerHTML =
-      '<div class="prize-emoji">' + p.emoji + '</div>' +
-      '<div class="prize-name">' + p.name + '</div>' +
-      '<div class="prize-rarity rarity-' + p.rarity + '">' + rarName + '</div>' +
-      '<div class="prize-desc">' + p.desc + '</div>';
-    document.getElementById('gachaLeft').textContent = st.left;
-    renderCollection();
-  }, 500);
+    spinning = false;
+    showPrize(p);
+  }, 4200);
+}
+function showPrize(p) {
+  const st = getGachaState();
+  st.coll[p.id] = (st.coll[p.id] || 0) + 1;
+  saveGachaState(st);
+  const card = document.getElementById('prizeCard');
+  card.className = 'prize-card got';
+  const rarName = { normal: '普通款', rare: '稀有款', epic: '史诗款', hidden: '隐藏款' }[p.rarity];
+  let extra = '';
+  if (p.rarity === 'hidden') {
+    const code = 'PF' + Date.now().toString().slice(-6) + Math.floor(Math.random() * 900 + 100);
+    const codes = JSON.parse(localStorage.getItem('pofang_codes') || '[]');
+    codes.push({ code: code, prize: p.name, time: new Date().toISOString() });
+    localStorage.setItem('pofang_codes', JSON.stringify(codes));
+    extra = '<div style="margin-top:10px;background:rgba(255,201,60,.15);border:1px dashed #FFC93C;border-radius:10px;padding:10px;font-size:13px;color:#FFC93C;">🎟️ 兑换码：<b>' + code + '</b><br><span style="color:var(--text2);font-size:12px;">截图保存，加微信【你的微信】凭码兑换实体奖品</span></div>';
+  }
+  card.innerHTML =
+    '<div class="prize-emoji">' + p.emoji + '</div>' +
+    '<div class="prize-name">' + p.name + '</div>' +
+    '<div class="prize-rarity rarity-' + p.rarity + '">' + rarName + '</div>' +
+    '<div class="prize-desc">' + p.desc + '</div>' + extra;
+  renderCollection();
 }
 function resetGachaDemo() {
   const st = getGachaState();
   st.left = DAILY_LIMIT;
   saveGachaState(st);
   document.getElementById('gachaLeft').textContent = st.left;
-  renderBoxes();
   document.getElementById('prizeCard').innerHTML =
-    '<div class="prize-emoji">🎁</div><div class="prize-name">次数已重置</div><div class="prize-desc">再抽一次试试手气</div>';
+    '<div class="prize-emoji">🎰</div><div class="prize-name">次数已重置</div><div class="prize-desc">转一下试试手气</div>';
 }
-renderBoxes();
+drawWheel();
 renderCollection();
 
 // ================= 实体盲盒下单 =================
