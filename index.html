@@ -241,6 +241,49 @@
   .coll-item.got { border-color: var(--green); color: var(--text); }
   .coll-item .cnt { color: var(--pink); font-size: 11px; }
 
+  /* ===== 实体盲盒商城 ===== */
+  .real-gacha { margin-top: 26px; border-top: 1px solid #222831; padding-top: 20px; }
+  .real-gacha h4 { color: var(--text); font-size: 16px; margin-bottom: 6px; }
+  .gacha-note { color: var(--text2); font-size: 13px; margin-bottom: 16px; }
+  .tier-row { display: flex; gap: 16px; flex-wrap: wrap; }
+  .tier {
+    flex: 1; min-width: 180px; background: linear-gradient(160deg, #1A2029, #151922);
+    border: 1px solid #2A3442; border-radius: 14px; padding: 18px; text-align: center;
+    transition: transform .2s, border .2s;
+  }
+  .tier:hover { transform: translateY(-4px); border-color: var(--green); }
+  .tier.hot { border-color: var(--pink); box-shadow: 0 0 24px rgba(255,61,113,.15); }
+  .tier.main { border-width: 2px; }
+  .tier-emoji { font-size: 40px; }
+  .tier-name { font-size: 16px; font-weight: 700; margin-top: 8px; }
+  .tier-price { font-size: 22px; font-weight: 800; color: var(--green); margin: 6px 0; }
+  .tier-desc { font-size: 12px; color: var(--text2); line-height: 1.6; margin-bottom: 12px; }
+  /* 公仔图鉴 */
+  .figure-guide { margin-top: 22px; border-top: 1px solid #222831; padding-top: 18px; }
+  .figure-guide h4 { color: var(--text); font-size: 16px; margin-bottom: 6px; }
+  .fig-row { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 6px; }
+  .fig {
+    width: 108px; background: #1A2029; border: 1px solid #2A3442; border-radius: 12px;
+    padding: 12px 8px; text-align: center; transition: transform .2s;
+  }
+  .fig:hover { transform: translateY(-3px); }
+  .fig-img { font-size: 38px; }
+  .fig-name { font-size: 12.5px; color: var(--text); margin-top: 6px; }
+  .fig-rare { font-size: 10.5px; margin-top: 4px; padding: 2px 8px; border-radius: 10px; display: inline-block; }
+  .fig-rare.normal { background: rgba(138,151,166,.15); color: #8A97A6; }
+  .fig.hidden {
+    border-color: #FFC93C;
+    background: linear-gradient(160deg, #2A2410, #1A180E);
+    box-shadow: 0 0 20px rgba(255,201,60,.22);
+  }
+  .fig-rare.hidden { background: rgba(255,201,60,.2); color: #FFC93C; }
+  .odds {
+    margin-top: 16px; background: #0B0E13; border: 1px dashed #2A3442; border-radius: 12px;
+    padding: 14px 18px; font-size: 12.5px; color: var(--text2); line-height: 2;
+  }
+  .odds b { color: var(--green); }
+  .odds span { display: block; }
+
   /* ===== 漂流瓶 ===== */
   .bottle { display: flex; gap: 30px; flex-wrap: wrap; }
   .bottle-write { flex: 1.2; min-width: 280px; }
@@ -435,6 +478,90 @@
     </div>
   </div>
   <div class="collection" id="collection"></div>
+  <div class="real-gacha">
+    <h4>📦 实体盲盒 · 书法文创系列（真实寄到家）</h4>
+    <p class="gacha-note">线上抽的是电子奖励，这里抽的是真实周边——手写书签、迷你书法、像素贴纸，随机发货</p>
+    <div class="tier-row">
+      <div class="tier hot main">
+        <div class="tier-emoji">🧸</div>
+        <div class="tier-name">公仔盲盒 <span style="font-size:11px;color:var(--pink);">🔥主推</span></div>
+        <div class="tier-price">¥39.9</div>
+        <div class="tier-desc">破防星球 IP 公仔<br>6 普通 + 1 隐藏款随机</div>
+        <button class="btn pink" onclick="orderTier('公仔盲盒','39.9')" style="font-size:13px;padding:8px 26px;">选 择</button>
+      </div>
+      <div class="tier">
+        <div class="tier-emoji">🖌️</div>
+        <div class="tier-name">书签盲盒</div>
+        <div class="tier-price">¥9.9</div>
+        <div class="tier-desc">手写书法书签 ×1<br>+ 电子语录卡 ×1</div>
+        <button class="btn" onclick="orderTier('书签盲盒','9.9')" style="font-size:13px;padding:8px 26px;">选 择</button>
+      </div>
+      <div class="tier">
+        <div class="tier-emoji">🎨</div>
+        <div class="tier-name">文创盲盒</div>
+        <div class="tier-price">¥19.9</div>
+        <div class="tier-desc">书签 + 迷你书法 + 贴纸<br>随机 2-3 件</div>
+        <button class="btn" onclick="orderTier('文创盲盒','19.9')" style="font-size:13px;padding:8px 26px;">选 择</button>
+      </div>
+      <div class="tier">
+        <div class="tier-emoji">👑</div>
+        <div class="tier-name">豪华盲盒</div>
+        <div class="tier-price">¥29.9</div>
+        <div class="tier-desc">全套周边 + 隐藏款卷轴<br>概率更高</div>
+        <button class="btn" onclick="orderTier('豪华盲盒','29.9')" style="font-size:13px;padding:8px 26px;">选 择</button>
+      </div>
+    </div>
+    <div class="figure-guide">
+      <h4>🧸 公仔图鉴 · 破防星球 IP 系列（6 普通 + 1 隐藏）</h4>
+      <p class="gacha-note">你的像素角色就是公仔原型！凑齐 6 款普通公仔可兑换隐藏款资格～</p>
+      <div class="fig-row">
+        <div class="fig">
+          <div class="fig-img">💔</div>
+          <div class="fig-name">破防少女</div>
+          <div class="fig-rare normal">普通款</div>
+        </div>
+        <div class="fig">
+          <div class="fig-img">🤖</div>
+          <div class="fig-name">emo 机器人</div>
+          <div class="fig-rare normal">普通款</div>
+        </div>
+        <div class="fig">
+          <div class="fig-img">😤</div>
+          <div class="fig-name">暴躁小王</div>
+          <div class="fig-rare normal">普通款</div>
+        </div>
+        <div class="fig">
+          <div class="fig-img">🐱</div>
+          <div class="fig-name">摸鱼猫</div>
+          <div class="fig-rare normal">普通款</div>
+        </div>
+        <div class="fig">
+          <div class="fig-img">🐶</div>
+          <div class="fig-name">加班狗</div>
+          <div class="fig-rare normal">普通款</div>
+        </div>
+        <div class="fig">
+          <div class="fig-img">🐰</div>
+          <div class="fig-name">失眠兔</div>
+          <div class="fig-rare normal">普通款</div>
+        </div>
+        <div class="fig hidden">
+          <div class="fig-img">👑</div>
+          <div class="fig-name">黄金破防王</div>
+          <div class="fig-rare hidden">隐藏款</div>
+        </div>
+      </div>
+    </div>
+    <div class="odds">
+      <b>📋 概率公示（合规透明）</b>
+      <span>· 公仔盲盒：6 款普通公仔各 16%（合计 96%）/ 隐藏款「黄金破防王」4%</span>
+      <span>· 书签盲盒：书法书签 100%</span>
+      <span>· 文创盲盒：书签 40% / 迷你书法 30% / 像素贴纸 30%</span>
+      <span>· 豪华盲盒：常规款 85% / 隐藏款·书法卷轴 15%</span>
+      <span>· 隐藏款回收：抽到隐藏款不想要可联系微信原价回收</span>
+      <span>· 发货说明：下单后加微信付款，48 小时内寄出，全国包邮</span>
+    </div>
+  </div>
 </section>
 
 <!-- 情绪漂流瓶 -->
@@ -890,6 +1017,23 @@ function resetGachaDemo() {
 }
 renderBoxes();
 renderCollection();
+
+// ================= 实体盲盒下单 =================
+function orderTier(name, price) {
+  const contact = prompt('📦 下单确认：' + name + '（¥' + price + '）\n\n请留下你的微信或手机号，方便联系发货：');
+  if (!contact) return;
+  const order = {
+    id: 'PF' + Date.now().toString().slice(-8),
+    name: name, price: price, contact: contact,
+    time: new Date().toISOString(), status: '待付款'
+  };
+  const orders = JSON.parse(localStorage.getItem('pofang_orders') || '[]');
+  orders.push(order);
+  localStorage.setItem('pofang_orders', JSON.stringify(orders));
+  alert('🎉 订单已生成！订单号：' + order.id +
+        '\n\n👉 请添加微信【你的微信】付款（备注订单号）' +
+        '\n确认收款后 48 小时内寄出，全国包邮～');
+}
 
 // ================= 情绪漂流瓶 =================
 const seedBottles = [
