@@ -1,0 +1,981 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>破防星球 · 年轻人的情绪发泄站</title>
+<style>
+  :root {
+    --bg: #0F1115;
+    --bg2: #151922;
+    --green: #00E5A0;
+    --pink: #FF3D71;
+    --purple: #9B5CFF;
+    --yellow: #FFC93C;
+    --text: #E8EDF2;
+    --text2: #8A97A6;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+    background: var(--bg); color: var(--text);
+    overflow-x: hidden;
+  }
+  ::selection { background: var(--green); color: #000; }
+
+  nav {
+    position: fixed; top: 0; width: 100%; z-index: 99;
+    background: rgba(15,17,21,.9); backdrop-filter: blur(8px);
+    border-bottom: 1px solid #222831;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 14px 30px;
+  }
+  nav .logo { font-weight: 800; font-size: 20px; letter-spacing: 2px; color: var(--green); }
+  nav .logo em { font-style: normal; color: var(--pink); }
+  nav a {
+    color: var(--text2); text-decoration: none; margin-left: 22px; font-size: 14px;
+    transition: color .2s;
+  }
+  nav a:hover { color: var(--green); }
+
+  /* ===== Hero ===== */
+  .hero {
+    min-height: 100vh; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; text-align: center;
+    position: relative; padding: 0 20px;
+    background:
+      radial-gradient(600px 400px at 15% 20%, rgba(0,229,160,.12), transparent),
+      radial-gradient(600px 400px at 85% 80%, rgba(255,61,113,.12), transparent),
+      radial-gradient(400px 300px at 80% 15%, rgba(155,92,255,.1), transparent),
+      var(--bg);
+  }
+  .hero .emoji-big { font-size: 72px; animation: float 3s ease-in-out infinite; }
+  @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-14px)} }
+  .hero h1 {
+    font-size: 64px; font-weight: 900; letter-spacing: 6px; margin-top: 20px;
+    background: linear-gradient(90deg, var(--green), var(--purple), var(--pink));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .hero p { color: var(--text2); margin-top: 16px; font-size: 17px; letter-spacing: 2px; }
+  .hero .cta {
+    margin-top: 36px; display: inline-block; background: var(--pink); color: #fff;
+    font-size: 19px; font-weight: 700; padding: 16px 52px; border-radius: 40px;
+    text-decoration: none; letter-spacing: 3px;
+    box-shadow: 0 8px 30px rgba(255,61,113,.4);
+    transition: transform .2s, box-shadow .2s;
+  }
+  .hero .cta:hover { transform: translateY(-3px); box-shadow: 0 12px 40px rgba(255,61,113,.55); }
+  .hero .hint { position: absolute; bottom: 30px; color: #3A4654; font-size: 13px; letter-spacing: 3px; }
+
+  /* ===== Section ===== */
+  section { max-width: 1000px; margin: 0 auto; padding: 90px 24px; }
+  .sec-title { text-align: center; margin-bottom: 44px; }
+  .sec-title h2 { font-size: 34px; font-weight: 800; letter-spacing: 4px; }
+  .sec-title h2 .g { color: var(--green); } .sec-title h2 .p { color: var(--pink); } .sec-title h2 .y { color: var(--yellow); }
+  .sec-title p { color: var(--text2); margin-top: 8px; font-size: 14px; letter-spacing: 1px; }
+
+  .card {
+    background: var(--bg2); border: 1px solid #222831; border-radius: 18px;
+    padding: 30px; box-shadow: 0 10px 40px rgba(0,0,0,.4);
+  }
+
+  textarea {
+    width: 100%; min-height: 110px; background: #0B0E13; color: var(--text);
+    border: 2px solid #222831; border-radius: 12px; padding: 14px; font-size: 15px;
+    resize: vertical; font-family: inherit; outline: none; transition: border .2s;
+  }
+  textarea:focus { border-color: var(--green); }
+
+  .btn {
+    display: inline-block; border: none; cursor: pointer;
+    background: var(--green); color: #0B0E13; font-weight: 800;
+    padding: 13px 38px; border-radius: 30px; font-size: 16px; letter-spacing: 2px;
+    transition: transform .15s, opacity .2s; font-family: inherit;
+  }
+  .btn:hover { transform: translateY(-2px); }
+  .btn.pink { background: var(--pink); color: #fff; }
+  .btn:disabled { opacity: .4; cursor: not-allowed; }
+
+  .row { display: flex; gap: 14px; flex-wrap: wrap; align-items: center; margin-top: 16px; }
+
+  /* ===== 发射动画 ===== */
+  .launch-area { text-align: center; margin-top: 20px; position: relative; height: 130px; }
+  .rocket { font-size: 46px; display: inline-block; transition: transform .8s cubic-bezier(.2,.8,.3,1.4); }
+  .rocket.fly { transform: translate(0,-260px) rotate(20deg) scale(1.4); }
+  .boom { font-size: 60px; opacity: 0; }
+  .boom.show { opacity: 1; animation: pop .6s ease-out; }
+  @keyframes pop { 0%{transform:scale(.3);opacity:0} 60%{transform:scale(1.3)} 100%{transform:scale(1);opacity:1} }
+  .shake { animation: shake .4s; }
+  @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-8px)} 75%{transform:translateX(8px)} }
+
+  /* 分享卡 */
+  .share-card { display: none; margin-top: 20px; text-align: center; }
+  .share-card img { max-width: 300px; border-radius: 14px; border: 1px solid #222831; }
+
+  /* ===== 骂醒 ===== */
+  .quote-box {
+    min-height: 110px; background: #0B0E13; border-radius: 12px; padding: 20px;
+    font-size: 17px; line-height: 1.7; border-left: 4px solid var(--pink);
+    display: flex; align-items: center; justify-content: center; text-align: center;
+  }
+  .mood-btns { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin-top: 18px; }
+  .mood-btns button {
+    background: #1A2029; color: var(--text); border: 1px solid #2A3442;
+    padding: 9px 20px; border-radius: 24px; cursor: pointer; font-size: 14px;
+    font-family: inherit; transition: all .2s;
+  }
+  .mood-btns button:hover { border-color: var(--pink); color: var(--pink); transform: translateY(-2px); }
+
+  /* ===== 垃圾桶 ===== */
+  .trash-area { text-align: center; margin-top: 22px; font-size: 64px; cursor: pointer; }
+  .trash-area .trash { display: inline-block; transition: transform .3s; }
+  .trash-area .trash.open { transform: rotate(-12deg) scale(1.1); }
+  .trash-area .fly { animation: flyIn .8s ease-out; }
+  @keyframes flyIn { 0%{transform:translate(0,-140px) rotate(15deg);opacity:0} 100%{transform:translate(0,0);opacity:1} }
+
+  /* ===== 测试 ===== */
+  .quiz { text-align: center; }
+  .quiz .q { font-size: 18px; font-weight: 700; margin-bottom: 20px; min-height: 30px; }
+  .quiz .opts { display: grid; gap: 12px; max-width: 420px; margin: 0 auto; }
+  .quiz .opts button {
+    background: #1A2029; border: 1px solid #2A3442; color: var(--text);
+    padding: 13px; border-radius: 12px; font-size: 15px; cursor: pointer;
+    font-family: inherit; transition: all .2s;
+  }
+  .quiz .opts button:hover { border-color: var(--green); transform: translateX(4px); }
+  .quiz .result { font-size: 20px; font-weight: 800; margin-top: 16px; line-height: 1.8; }
+
+  /* ===== 树洞墙 ===== */
+  .wall { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 20px; }
+  .post {
+    background: #1A2029; border-radius: 12px; padding: 16px 18px; font-size: 14px;
+    border: 1px solid #222831; position: relative;
+  }
+  .post .time { color: #4A5666; font-size: 12px; margin-top: 8px; }
+  .post .heart { position: absolute; top: 12px; right: 14px; cursor: pointer; font-size: 16px; }
+  .post .heart.liked { filter: none; }
+
+  /* ===== 广告位 ===== */
+  .ad {
+    margin: 60px auto; max-width: 1000px; padding: 40px 24px; text-align: center;
+    border: 2px dashed #2A3442; border-radius: 16px; color: #4A5666; font-size: 14px;
+    background: rgba(26,32,41,.4); letter-spacing: 3px;
+  }
+
+  footer { text-align: center; padding: 40px 20px; color: #3A4654; font-size: 13px; border-top: 1px solid #1A2029; }
+
+  /* ===== 论坛 ===== */
+  .thread {
+    background: #1A2029; border: 1px solid #222831; border-radius: 14px;
+    padding: 18px 20px; margin-top: 14px; cursor: pointer; transition: border .2s;
+  }
+  .thread:hover { border-color: var(--green); }
+  .t-head { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+  .t-title { font-size: 16px; font-weight: 700; color: var(--text); }
+  .t-cat { font-size: 12px; color: var(--green); border: 1px solid rgba(0,229,160,.4); padding: 2px 10px; border-radius: 12px; }
+  .t-meta { color: #4A5666; font-size: 12px; margin-top: 8px; display: flex; gap: 14px; flex-wrap: wrap; }
+  .t-content { color: var(--text2); font-size: 14px; margin-top: 10px; line-height: 1.7; }
+  .t-actions { display: flex; gap: 18px; margin-top: 12px; font-size: 13px; color: var(--text2); }
+  .t-actions span { cursor: pointer; transition: color .2s; }
+  .t-actions span:hover { color: var(--pink); }
+  .replies { margin-top: 12px; border-top: 1px solid #222831; padding-top: 12px; }
+  .reply { font-size: 13px; color: var(--text2); padding: 8px 0; border-bottom: 1px dashed #222831; line-height: 1.6; }
+  .r-meta { color: #4A5666; font-size: 11px; margin-top: 4px; }
+  .reply-input { display: flex; gap: 10px; margin-top: 10px; }
+  .reply-input input { flex: 1; background: #0B0E13; border: 1px solid #2A3442; border-radius: 8px; padding: 8px 12px; color: var(--text); font-size: 13px; outline: none; font-family: inherit; }
+  .reply-input button { background: var(--green); color: #0B0E13; border: none; border-radius: 8px; padding: 8px 16px; font-weight: 700; cursor: pointer; font-size: 13px; font-family: inherit; }
+
+  /* ===== 盲盒机 ===== */
+  .gacha { display: flex; gap: 30px; flex-wrap: wrap; }
+  .gacha-left { flex: 1.1; min-width: 280px; }
+  .gacha-right { flex: 1; min-width: 260px; }
+  .box-row { display: flex; flex-wrap: wrap; gap: 14px; }
+  .box {
+    width: 88px; height: 88px; border-radius: 16px; cursor: pointer;
+    background: linear-gradient(145deg, #232B38, #1A2029);
+    border: 2px solid #2E3A4C; display: flex; align-items: center; justify-content: center;
+    font-size: 40px; transition: transform .2s, border .2s; user-select: none;
+    position: relative;
+  }
+  .box:hover { transform: translateY(-6px) scale(1.05); border-color: var(--green); }
+  .box.shaking { animation: boxShake .5s; }
+  @keyframes boxShake { 0%,100%{transform:rotate(0)} 20%{transform:rotate(-8deg)} 40%{transform:rotate(8deg)} 60%{transform:rotate(-6deg)} 80%{transform:rotate(6deg)} }
+  .box.opened { border-color: var(--pink); background: linear-gradient(145deg, #2A2233, #1F1820); }
+  .gacha-tip { color: var(--text2); font-size: 14px; margin-top: 16px; }
+  .gacha-tip b { color: var(--pink); font-size: 18px; }
+  .prize-card {
+    background: #0B0E13; border-radius: 16px; padding: 26px; text-align: center;
+    border: 1px solid #222831; min-height: 230px; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; transition: border .3s;
+  }
+  .prize-card.got { border-color: var(--green); }
+  .prize-emoji { font-size: 62px; animation: pop .5s ease-out; }
+  .prize-name { font-size: 17px; font-weight: 700; margin-top: 14px; color: var(--text); }
+  .prize-desc { font-size: 13px; color: var(--text2); margin-top: 8px; line-height: 1.6; }
+  .prize-rarity { font-size: 12px; margin-top: 10px; padding: 3px 14px; border-radius: 14px; letter-spacing: 1px; }
+  .rarity-normal { background: rgba(138,151,166,.2); color: #8A97A6; }
+  .rarity-rare { background: rgba(0,229,160,.15); color: var(--green); }
+  .rarity-epic { background: rgba(155,92,255,.15); color: var(--purple); }
+  .rarity-hidden { background: rgba(255,61,113,.18); color: var(--pink); }
+  .collection { margin-top: 24px; }
+  .collection h4 { color: var(--text2); font-size: 14px; margin-bottom: 10px; letter-spacing: 2px; }
+  .coll-row { display: flex; flex-wrap: wrap; gap: 10px; }
+  .coll-item {
+    background: #1A2029; border: 1px solid #222831; border-radius: 12px;
+    padding: 8px 14px; font-size: 13px; color: var(--text2); display: flex; align-items: center; gap: 8px;
+  }
+  .coll-item.got { border-color: var(--green); color: var(--text); }
+  .coll-item .cnt { color: var(--pink); font-size: 11px; }
+
+  /* ===== 漂流瓶 ===== */
+  .bottle { display: flex; gap: 30px; flex-wrap: wrap; }
+  .bottle-write { flex: 1.2; min-width: 280px; }
+  .bottle-fetch { flex: 1; min-width: 280px; }
+  .bottle h4 { color: var(--text); font-size: 16px; margin-bottom: 12px; letter-spacing: 1px; }
+  .bottle-quality { font-size: 12px; color: var(--text2); }
+  .bottle-quality.bad { color: var(--pink); }
+  .bottle-quality.good { color: var(--green); }
+  .bottle-progress { margin-top: 10px; height: 10px; background: #0B0E13; border-radius: 6px; overflow: hidden; border: 1px solid #222831; }
+  .bottle-progress .bar { height: 100%; background: linear-gradient(90deg, var(--green), var(--purple)); width: 0%; transition: width .4s; }
+  .bottle-count { color: var(--text2); font-size: 13px; margin-top: 8px; }
+  .bottle-count b { color: var(--green); font-size: 16px; }
+  .bottle-card {
+    background: linear-gradient(160deg, #0E2A33, #0B0E13); border-radius: 16px;
+    padding: 24px; text-align: center; border: 1px solid #1D4A55; min-height: 190px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+  }
+  .bottle-emoji { font-size: 44px; }
+  .bottle-text { font-size: 15px; color: var(--text); margin-top: 12px; line-height: 1.7; }
+  .bottle-meta { font-size: 12px; color: #4A7A85; margin-top: 10px; }
+  .bottle-mine { margin-top: 22px; }
+  .bottle-mine h4 { color: var(--text2); font-size: 14px; margin-bottom: 10px; letter-spacing: 2px; }
+  .mine-row { display: flex; flex-wrap: wrap; gap: 10px; }
+  .mine-item {
+    background: #1A2029; border: 1px solid #222831; border-radius: 12px;
+    padding: 10px 14px; font-size: 13px; color: var(--text2); max-width: 300px;
+  }
+  .mine-item .tag { color: var(--green); font-size: 11px; }
+
+  @media (max-width: 700px) {
+    .hero h1 { font-size: 42px; }
+    .wall { grid-template-columns: 1fr; }
+    nav a { margin-left: 12px; font-size: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">💥 破防星球<em>.</em></div>
+  <div>
+    <a href="#launch">吐槽发射</a>
+    <a href="#wake">骂醒</a>
+    <a href="#trash">垃圾桶</a>
+    <a href="#quiz">破防测试</a>
+    <a href="#wall">树洞</a>
+    <a href="#forum">论坛</a>
+    <a href="#gacha">盲盒</a>
+    <a href="#bottle">漂流瓶</a>
+  </div>
+</nav>
+
+<!-- Hero -->
+<header class="hero" id="top">
+  <div class="emoji-big">🤯</div>
+  <h1>破防星球</h1>
+  <p>成年人的崩溃 都在这里合法释放<br>吐槽 · 发泄 · 骂醒 · 树洞 —— 进来就完事了</p>
+  <a class="cta" href="#launch">开始发泄 ↓</a>
+  <div class="hint">📢 今日星球电量：100% 愤怒</div>
+</header>
+
+<!-- 吐槽发射器 -->
+<section id="launch">
+  <div class="sec-title">
+    <h2><span class="g">吐</span><span class="p">槽</span><span class="y">发</span><span class="g">射</span><span class="p">器</span></h2>
+    <p>把想骂的话写进去，发射到外太空，顺便生成吐槽卡片分享出去</p>
+  </div>
+  <div class="card">
+    <textarea id="rantInput" placeholder="例：论文改了八遍，导师说还是初稿水平，我人麻了……"></textarea>
+    <div class="row">
+      <button class="btn pink" onclick="launchRant()">🚀 发射吐槽</button>
+      <button class="btn" onclick="randomRant()" style="background:#1A2029;color:var(--text);border:1px solid #2A3442;">🎲 随便来一个</button>
+    </div>
+    <div class="launch-area" id="launchArea">
+      <span class="rocket" id="rocket">🚀</span>
+    </div>
+    <div class="share-card" id="shareCard">
+      <p style="color:var(--text2);font-size:13px;margin-bottom:8px;">👇 你的吐槽卡片（长按保存/右键另存，发朋友圈）</p>
+      <img id="shareImg" alt="吐槽卡片">
+      <div class="row" style="justify-content:center;">
+        <a class="btn" id="downloadBtn" download="吐槽卡片.png" style="font-size:14px;">💾 保存卡片</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 骂醒语录 -->
+<section id="wake">
+  <div class="sec-title">
+    <h2><span class="p">骂</span><span class="g">醒</span><span class="p">服</span><span class="g">务</span></h2>
+    <p>免费的，比付费的还扎心。选一个你的状态，接受现实</p>
+  </div>
+  <div class="card">
+    <div class="quote-box" id="quoteBox">选择你的状态，我来当那个说真话的人。</div>
+    <div class="mood-btns" id="moodBtns"></div>
+  </div>
+</section>
+
+<!-- 心情垃圾桶 -->
+<section id="trash">
+  <div class="sec-title">
+    <h2><span class="y">心</span><span class="g">情</span><span class="p">垃</span><span class="y">圾</span><span class="g">桶</span></h2>
+    <p>把烦恼扔进去，点击垃圾桶粉碎它</p>
+  </div>
+  <div class="card">
+    <textarea id="trashInput" placeholder="例：今天又被老板当众骂了，好烦……"></textarea>
+    <div class="row" style="justify-content:center;">
+      <button class="btn" onclick="throwTrash()">🗑️ 扔进垃圾桶</button>
+    </div>
+    <div class="trash-area" id="trashArea">
+      <span class="trash" id="trashIcon">🗑️</span>
+    </div>
+    <p id="trashMsg" style="text-align:center;color:var(--text2);font-size:14px;margin-top:10px;"></p>
+  </div>
+</section>
+
+<!-- 破防测试 -->
+<section id="quiz">
+  <div class="sec-title">
+    <h2><span class="g">破</span><span class="p">防</span><span class="y">指</span><span class="g">数</span><span class="p">测</span><span class="y">试</span></h2>
+    <p>测测你今天离原地爆炸还有多远</p>
+  </div>
+  <div class="card quiz">
+    <div class="q" id="quizQ"></div>
+    <div class="opts" id="quizOpts"></div>
+    <div class="result" id="quizResult"></div>
+  </div>
+</section>
+
+<!-- 树洞墙 -->
+<section id="wall">
+  <div class="sec-title">
+    <h2><span class="p">树</span><span class="g">洞</span><span class="y">墙</span></h2>
+    <p>别人的崩溃，是最好的安慰剂</p>
+  </div>
+  <div class="card">
+    <textarea id="wallInput" placeholder="匿名说一句你的崩溃/吐槽，贴到墙上……"></textarea>
+    <div class="row"><button class="btn pink" onclick="postWall()">📌 贴上墙</button></div>
+    <div class="wall" id="wallList"></div>
+  </div>
+</section>
+
+<!-- 吐槽论坛 -->
+<section id="forum">
+  <div class="sec-title">
+    <h2><span class="g">吐</span><span class="p">槽</span><span class="y">论</span><span class="g">坛</span></h2>
+    <p>发帖 · 回帖 · 互怼 —— 破防星人的聚集地</p>
+  </div>
+  <div class="card">
+    <div class="forum-new">
+      <div class="row" style="margin-top:0;">
+        <input id="forumNick" placeholder="你的昵称（默认：匿名星人）" style="flex:1;min-width:160px;background:#0B0E13;border:2px solid #222831;border-radius:10px;padding:10px 14px;color:var(--text);font-size:14px;outline:none;font-family:inherit;">
+        <select id="forumCat" style="background:#0B0E13;color:var(--text);border:2px solid #222831;border-radius:10px;padding:10px;font-size:14px;outline:none;">
+          <option>全部</option><option>工作</option><option>学业</option><option>感情</option><option>生活</option><option>求助</option>
+        </select>
+      </div>
+      <input id="forumTitle" placeholder="标题：一句话说清你的崩溃" style="width:100%;margin-top:12px;background:#0B0E13;border:2px solid #222831;border-radius:10px;padding:12px 14px;color:var(--text);font-size:15px;outline:none;font-family:inherit;">
+      <textarea id="forumContent" placeholder="展开说说……" style="margin-top:12px;"></textarea>
+      <div class="row"><button class="btn pink" onclick="postThread()">📢 发布帖子</button></div>
+    </div>
+    <div class="row" style="justify-content:space-between;margin-top:24px;">
+      <span style="color:var(--text2);font-size:13px;" id="forumCount"></span>
+      <div style="display:flex;gap:8px;">
+        <button class="btn" onclick="sortForum('hot')" style="font-size:13px;padding:8px 20px;background:#1A2029;color:var(--text);border:1px solid #2A3442;">🔥 最热</button>
+        <button class="btn" onclick="sortForum('new')" style="font-size:13px;padding:8px 20px;background:#1A2029;color:var(--text);border:1px solid #2A3442;">🕐 最新</button>
+      </div>
+    </div>
+    <div id="forumList" style="margin-top:10px;"></div>
+  </div>
+</section>
+
+<!-- 破防盲盒机 -->
+<section id="gacha">
+  <div class="sec-title">
+    <h2><span class="g">破</span><span class="p">防</span><span class="y">盲</span><span class="g">盒</span><span class="p">机</span></h2>
+    <p>每天 3 次免费抽 · 集齐款式解锁成就 · 隐藏款有实体周边</p>
+  </div>
+  <div class="card gacha">
+    <div class="gacha-left">
+      <div class="box-row" id="boxRow"></div>
+      <p class="gacha-tip">🎁 点击盒子抽取 · 今日剩余 <b id="gachaLeft">3</b> 次</p>
+      <button class="btn pink" onclick="resetGachaDemo()" style="font-size:13px;padding:8px 22px;margin-top:10px;">🔄 演示：重置次数</button>
+    </div>
+    <div class="gacha-right">
+      <div class="prize-card" id="prizeCard">
+        <div class="prize-emoji">🎁</div>
+        <div class="prize-name">点击盒子，看看今天的运气</div>
+        <div class="prize-desc">每天 3 次免费，次日刷新</div>
+      </div>
+    </div>
+  </div>
+  <div class="collection" id="collection"></div>
+</section>
+
+<!-- 情绪漂流瓶 -->
+<section id="bottle">
+  <div class="sec-title">
+    <h2><span class="p">情</span><span class="g">绪</span><span class="y">漂</span><span class="p">流</span><span class="g">瓶</span></h2>
+    <p>把情绪装进瓶子扔进海里 · 丢 3 个高质量瓶子 = 1 次抽奖机会</p>
+  </div>
+  <div class="card bottle">
+    <div class="bottle-write">
+      <h4>📮 写下你的情绪，扔进海里</h4>
+      <textarea id="bottleInput" placeholder="例：今天被领导当众否定，下班在地铁上差点哭出来，成年人的崩溃真的就在一瞬间……"></textarea>
+      <div class="row" style="margin-top:10px;">
+        <button class="btn" onclick="throwBottle()">🌊 扔进海里</button>
+        <span class="bottle-quality" id="bottleQuality">写够 10 个字、有真实情绪，才算高质量</span>
+      </div>
+      <div class="bottle-progress" id="bottleProgress"></div>
+      <p class="bottle-count">今日高质量瓶子 <b id="highCount">0</b> / 3　→　可兑换抽奖次数 <b id="rewardLeft">0</b></p>
+    </div>
+    <div class="bottle-fetch">
+      <h4>🫳 捞一个别人的瓶子</h4>
+      <div class="bottle-card" id="bottleCard">
+        <div class="bottle-emoji">🌊</div>
+        <div class="bottle-text">点击「捞瓶子」，看看海里漂着什么情绪……</div>
+        <div class="bottle-meta">海底 · 风平浪静</div>
+      </div>
+      <div class="row" style="justify-content:center;margin-top:14px;">
+        <button class="btn pink" onclick="fetchBottle()">🎣 捞一个瓶子</button>
+        <button class="btn" onclick="empathizeBottle()" style="background:#1A2029;color:var(--text);border:1px solid #2A3442;">🫂 共情 +1</button>
+      </div>
+    </div>
+  </div>
+  <div class="bottle-mine" id="bottleMine"></div>
+</section>
+
+<!-- 广告位 -->
+<div class="ad">【广告位 · 招租】等你的流量起来，这里就是印钞机 → 联系方式：site@example.com</div>
+
+<footer>
+  💥 破防星球 · 情绪发泄站 · 2026<br>
+  <span style="font-size:12px;">在这里发泄完毕，出门继续当个情绪稳定的大人。</span>
+</footer>
+
+<script>
+// ================= 吐槽发射 =================
+const RANDOM_RANTS = [
+  "论文改了八遍，导师说还是初稿水平，我人麻了……",
+  "室友凌晨三点打游戏外放，我已经快成仙了。",
+  "面试官说回去等通知，我等到公司都倒闭了。",
+  "工资三千五，命比咖啡苦，破防了家人们。",
+  "对象说'在忙'，然后我刷到了他给别的女生点赞。",
+  "减肥第一天：吃顿好的庆祝一下。",
+  "甲方的'随便改改'= 推翻重来。",
+  "我明明很努力了，为什么还是不行？？",
+];
+
+function launchRant() {
+  const txt = document.getElementById('rantInput').value.trim();
+  if (!txt) { alert('先写点啥再发射呀～'); return; }
+  const area = document.getElementById('launchArea');
+  const rocket = document.getElementById('rocket');
+  const card = document.getElementById('shareCard');
+  card.style.display = 'none';
+  rocket.classList.remove('fly');
+  void rocket.offsetWidth;
+  rocket.classList.add('fly');
+  document.body.classList.add('shake');
+  setTimeout(() => document.body.classList.remove('shake'), 500);
+  setTimeout(() => { makeCard(txt); card.style.display = 'block'; }, 900);
+  document.getElementById('rantInput').value = '';
+}
+
+function randomRant() {
+  document.getElementById('rantInput').value = RANDOM_RANTS[Math.floor(Math.random() * RANDOM_RANTS.length)];
+}
+
+function makeCard(text) {
+  const c = document.createElement('canvas');
+  c.width = 720; c.height = 900;
+  const x = c.getContext('2d');
+  // 背景
+  const grad = x.createLinearGradient(0, 0, 720, 900);
+  grad.addColorStop(0, '#0F1115'); grad.addColorStop(1, '#1A2030');
+  x.fillStyle = grad; x.fillRect(0, 0, 720, 900);
+  // 霓虹边框
+  x.strokeStyle = '#00E5A0'; x.lineWidth = 6;
+  x.strokeRect(30, 30, 660, 840);
+  x.strokeStyle = '#FF3D71'; x.lineWidth = 2;
+  x.strokeRect(42, 42, 636, 816);
+  // 标题
+  x.fillStyle = '#FF3D71'; x.font = 'bold 52px "Microsoft YaHei"';
+  x.textAlign = 'center';
+  x.fillText('💥 破防星球 💥', 360, 130);
+  x.fillStyle = '#8A97A6'; x.font = '22px "Microsoft YaHei"';
+  x.fillText('今日吐槽发射成功', 360, 180);
+  // 吐槽内容（自动换行）
+  x.fillStyle = '#E8EDF2'; x.font = '34px "Microsoft YaHei"';
+  const maxW = 560; const lineH = 56; let y = 300;
+  let line = '';
+  for (const ch of text) {
+    if (x.measureText(line + ch).width > maxW) { x.fillText(line, 360, y); line = ch; y += lineH; }
+    else { line += ch; }
+    if (y > 700) break;
+  }
+  if (line) x.fillText(line, 360, y);
+  // 底部
+  x.fillStyle = '#00E5A0'; x.font = '26px "Microsoft YaHei"';
+  x.fillText('—— 来自破防星球的一枚吐槽 ——', 360, 800);
+  const img = document.getElementById('shareImg');
+  img.src = c.toDataURL('image/png');
+  document.getElementById('downloadBtn').href = img.src;
+}
+
+// ================= 骂醒语录 =================
+const QUOTES = {
+  '学习摆烂': [
+    '你搁这刷手机呢？你室友已经卷完两轮了。',
+    '你不是没天赋，你是懒，而且不敢承认。',
+    '别人考上了叫上岸，你考不上叫淹死。',
+    '你连早睡都做不到，还指望人生翻盘？',
+  ],
+  '工作焦虑': [
+    '简历投了吗？没有？那你破防的资格都是借来的。',
+    '你老板骂你，是因为你确实只值这个价。',
+    '摸鱼一时爽，月底看工资条火葬场。',
+    '别人是来上班的，你是来上坟的。',
+  ],
+  '感情内耗': [
+    '他回你消息的速度，取决于你在他心里的价格。',
+    '你放不下的不是他，是你自己的幻想。',
+    '都 2026 年了，还在为不回消息的人写小作文？',
+    '你的深情，在对方眼里就是骚扰。',
+  ],
+  '生活破防': [
+    '你连自己都照顾不好，还想照顾梦想？',
+    '又穷又忙又丧，这就是你的舒适区？',
+    '深夜emo不如早睡，第二天还得搬砖。',
+    '你抱怨的样子，比你的处境更难看。',
+  ],
+  '社恐日常': [
+    '你在群里打了半天字又删了，真有你的。',
+    '别人在社交，你在家里躺着数天花板。',
+    '你不是内向，你是怂。',
+    '微信已读不回，你俩到底谁在装死？',
+  ],
+};
+const moodBtns = document.getElementById('moodBtns');
+for (const k of Object.keys(QUOTES)) {
+  const b = document.createElement('button');
+  b.textContent = k;
+  b.onclick = () => {
+    const list = QUOTES[k];
+    document.getElementById('quoteBox').textContent = '💢 ' + list[Math.floor(Math.random() * list.length)];
+  };
+  moodBtns.appendChild(b);
+}
+
+// ================= 心情垃圾桶 =================
+function throwTrash() {
+  const txt = document.getElementById('trashInput').value.trim();
+  const msg = document.getElementById('trashMsg');
+  if (!txt) { msg.textContent = '先把烦恼写出来呀'; return; }
+  const icon = document.getElementById('trashIcon');
+  icon.classList.remove('fly', 'open');
+  void icon.offsetWidth;
+  icon.classList.add('fly');
+  setTimeout(() => { icon.classList.add('open'); }, 500);
+  msg.textContent = '💥 已粉碎：' + txt.slice(0, 30) + (txt.length > 30 ? '…' : '') + '　（烦恼值 -100）';
+  document.getElementById('trashInput').value = '';
+}
+
+// ================= 破防测试 =================
+const QUIZ = [
+  { q: '闹钟响了，你的第一反应？', opts: ['直接起床，自律就是我的名字', '按掉再睡五分钟', '把手机扔到墙上'] },
+  { q: '同事/同学当众说你坏话，你会？', opts: ['无所谓，格局打开', '记在小本本上', '当场开怼，谁怕谁'] },
+  { q: '外卖超时 40 分钟，你？', opts: ['体谅骑手，算了', '催单但语气温和', '内心已经开始核爆'] },
+  { q: '老板 23 点发消息："方案改一下，明早要"，你？', opts: ['好的收到，马上改', '内心骂娘表面答应', '已读不回，明早再说'] },
+  { q: '看到别人朋友圈晒上岸/晒工资，你？', opts: ['真心祝福', '酸了一下但马上好了', '破防了，关手机自闭'] },
+];
+let quizIdx = 0, quizScore = 0;
+function renderQuiz() {
+  const q = QUIZ[quizIdx];
+  document.getElementById('quizQ').textContent = 'Q' + (quizIdx + 1) + '. ' + q.q;
+  const opts = document.getElementById('quizOpts');
+  const res = document.getElementById('quizResult');
+  opts.innerHTML = ''; res.textContent = '';
+  q.opts.forEach((t, i) => {
+    const b = document.createElement('button');
+    b.textContent = t;
+    b.onclick = () => {
+      quizScore += i;
+      quizIdx++;
+      if (quizIdx < QUIZ.length) renderQuiz();
+      else {
+        opts.innerHTML = '';
+        document.getElementById('quizQ').textContent = '🎉 测试完成';
+        const level = quizScore <= 2 ? ['😌 心如止水', '你已经是情绪管理大师，建议开课教别人'] :
+                      quizScore <= 6 ? ['😤 随时待爆', '你离破防只差一根稻草，注意自我保护'] :
+                      ['💥 行走的炸药包', '朋友，你需要的不是测试，是休假+心理咨询'];
+        res.innerHTML = level[0] + '<br><span style="font-size:15px;color:var(--text2);font-weight:400;">' + level[1] + '</span>';
+        quizIdx = 0; quizScore = 0;
+      }
+    };
+    opts.appendChild(b);
+  });
+}
+renderQuiz();
+
+// ================= 树洞墙 =================
+const seedPosts = [
+  { text: '毕业论文改到第八稿，导师说：这次有点感觉了。我：？？？', time: '今天 09:12', likes: 233 },
+  { text: '相亲对象问我月薪多少，我说三千五，她让我滚。也好，省了一顿饭钱。', time: '今天 10:47', likes: 156 },
+  { text: '在电梯里跟老板独处 30 秒，比上班一整天还累。', time: '今天 13:20', likes: 98 },
+  { text: '戒了三个月烟，今天破功了。不是想抽，是想有个喘气的时间。', time: '今天 15:03', likes: 342 },
+  { text: '我妈说：你同学都结婚了，你呢？我：妈，我连对象都没有。', time: '今天 16:55', likes: 205 },
+  { text: '深夜给暗恋的人发了句"睡了吗"，他回了"嗯"。就这样吧。', time: '今天 18:30', likes: 188 },
+];
+function loadWall() {
+  const list = document.getElementById('wallList');
+  list.innerHTML = '';
+  const posts = getPosts();
+  posts.forEach((p, i) => {
+    const d = document.createElement('div');
+    d.className = 'post';
+    d.innerHTML = '<div class="heart" onclick="likePost(' + i + ')">❤️ ' + p.likes + '</div>' +
+      '<div>' + p.text + '</div><div class="time">' + p.time + '</div>';
+    list.appendChild(d);
+  });
+}
+function getPosts() {
+  let local = [];
+  try { local = JSON.parse(localStorage.getItem('pofang_posts') || '[]'); } catch (e) {}
+  return seedPosts.concat(local);
+}
+function postWall() {
+  const txt = document.getElementById('wallInput').value.trim();
+  if (!txt) { alert('写点啥再贴呀'); return; }
+  let local = [];
+  try { local = JSON.parse(localStorage.getItem('pofang_posts') || '[]'); } catch (e) {}
+  const now = new Date();
+  local.unshift({ text: txt, time: '刚刚 ' + now.getHours() + ':' + String(now.getMinutes()).padStart(2, '0'), likes: 0 });
+  localStorage.setItem('pofang_posts', JSON.stringify(local));
+  document.getElementById('wallInput').value = '';
+  loadWall();
+}
+function likePost(i) {
+  const posts = getPosts();
+  posts[i].likes++;
+  const local = posts.slice(seedPosts.length);
+  localStorage.setItem('pofang_posts', JSON.stringify(local));
+  loadWall();
+}
+
+// ================= 吐槽论坛 =================
+const forumSeed = [
+{ id: 1, title: '被导师 PUA 的第三年，我快碎了', content: '每次组会都说"你这水平毕业都难"，改了三版又说"还是初稿思路"。我到底是笨还是导师单纯想 pua 我？', cat: '学业', author: '学术难民', time: '今天 08:45', likes: 328, replies: [
+  { author: '过来人', text: '导师都这样，别内耗，他说得对的部分听，情绪部分当耳旁风。', time: '今天 09:02' },
+  { author: '匿名星人', text: '同一个世界同一个导师，抱抱。', time: '今天 09:15' },
+]},
+{ id: 2, title: '工资没涨房租涨了，2026 到底怎么活', content: '到手三千五，房租一千八，吃饭通勤一千二，剩五百块。朋友约我吃饭我都装死，不是不想去，是真的穷。', cat: '工作', author: '打工人阿伟', time: '今天 10:20', likes: 512, replies: [
+  { author: '月亮不睡我不睡', text: '我四千五，房租两千，我是不是更惨。', time: '今天 10:33' },
+]},
+{ id: 3, title: '对象冷暴力一周了，要不要分手', content: '发消息已读不回，见面爱答不理。问他怎么了，他说"没什么"。感觉这段感情已经死了，但我又舍不得两年的回忆。', cat: '感情', author: '心碎小狗', time: '今天 11:05', likes: 267, replies: [
+  { author: '人间清醒', text: '冷暴力就是逼你提分手，别替他做决定，你直接走。', time: '今天 11:20' },
+  { author: '匿名星人', text: '两年的回忆值钱吗？你以后的两年更值钱。', time: '今天 11:41' },
+]},
+{ id: 4, title: '戒烟第五天，整个人像丧尸', content: '头晕、暴躁、想骂人，看谁都不顺眼。第五天真的熬不住了，但又不想前功尽弃。求鼓励，或者求骂醒。', cat: '生活', author: '戒烟中的狼', time: '今天 14:12', likes: 401, replies: [
+  { author: '戒了三年的人', text: '挺过第七天就好了，我当年也是这么过来的，加油！', time: '今天 14:30' },
+]},
+{ id: 5, title: '社恐怎么优雅拒绝团建？在线等', content: '公司下周六团建，KTV+烧烤，不去显得不合群，去了全程脚趾抠地。有没有那种"既不去又不得罪人"的话术？', cat: '求助', author: '角落生物', time: '今天 16:02', likes: 189, replies: []},
+];
+let forumSort = 'hot';
+function getForum() {
+let local = [];
+try { local = JSON.parse(localStorage.getItem('pofang_forum') || '[]'); } catch (e) {}
+return forumSeed.concat(local);
+}
+function saveForumLocal(posts) {
+localStorage.setItem('pofang_forum', JSON.stringify(posts.slice(forumSeed.length)));
+}
+function heat(p) { return p.likes + p.replies.length * 10; }
+function renderForum() {
+const list = document.getElementById('forumList');
+const cat = document.getElementById('forumCat').value;
+let posts = getForum();
+if (cat !== '全部') posts = posts.filter(p => p.cat === cat);
+posts = posts.slice().sort((a, b) => forumSort === 'hot' ? heat(b) - heat(a) : b.id - a.id);
+document.getElementById('forumCount').textContent = '共 ' + posts.length + ' 个帖子 · ' + (forumSort === 'hot' ? '🔥 按热度' : '🕐 按最新');
+list.innerHTML = '';
+posts.forEach(p => {
+  const d = document.createElement('div');
+  d.className = 'thread';
+  let html = '<div class="t-head"><span class="t-title">' + p.title + '</span><span class="t-cat">' + p.cat + '</span></div>' +
+    '<div class="t-meta"><span>👤 ' + p.author + '</span><span>' + p.time + '</span></div>' +
+    '<div class="t-content">' + p.content + '</div>' +
+    '<div class="t-actions">' +
+    '<span onclick="likeThread(' + p.id + ')">❤️ ' + p.likes + '</span>' +
+    '<span onclick="toggleReplies(' + p.id + ')">💬 ' + p.replies.length + ' 回复</span></div>';
+  if (p._open) {
+    html += '<div class="replies">';
+    p.replies.forEach(r => {
+      html += '<div class="reply">' + r.text + '<div class="r-meta">' + r.author + ' · ' + r.time + '</div></div>';
+    });
+    html += '<div class="reply-input"><input id="replyInput' + p.id + '" placeholder="写点安慰/吐槽……"><button onclick="replyThread(' + p.id + ')">回复</button></div></div>';
+  }
+  d.innerHTML = html;
+  list.appendChild(d);
+});
+}
+function postThread() {
+const title = document.getElementById('forumTitle').value.trim();
+const content = document.getElementById('forumContent').value.trim();
+const nick = document.getElementById('forumNick').value.trim() || '匿名星人';
+const catSel = document.getElementById('forumCat').value;
+const cat = catSel === '全部' ? '生活' : catSel;
+if (!title || !content) { alert('标题和内容都要写呀'); return; }
+const now = new Date();
+const posts = getForum();
+const nid = Math.max(...posts.map(p => p.id), 100) + 1;
+posts.push({ id: nid, title: title, content: content, cat: cat, author: nick, time: '刚刚 ' + now.getHours() + ':' + String(now.getMinutes()).padStart(2, '0'), likes: 0, replies: [] });
+saveForumLocal(posts);
+document.getElementById('forumTitle').value = '';
+document.getElementById('forumContent').value = '';
+renderForum();
+}
+function likeThread(id) {
+const posts = getForum();
+const p = posts.find(x => x.id === id);
+if (p) { p.likes++; saveForumLocal(posts); renderForum(); }
+}
+function toggleReplies(id) {
+const posts = getForum();
+const p = posts.find(x => x.id === id);
+if (p) { p._open = !p._open; saveForumLocal(posts); renderForum(); }
+}
+function replyThread(id) {
+const input = document.getElementById('replyInput' + id);
+const text = input.value.trim();
+if (!text) return;
+const posts = getForum();
+const p = posts.find(x => x.id === id);
+if (p) {
+  const now = new Date();
+  p.replies.push({ author: '匿名星人', text: text, time: '刚刚 ' + now.getHours() + ':' + String(now.getMinutes()).padStart(2, '0') });
+  p._open = true;
+  saveForumLocal(posts);
+  renderForum();
+}
+}
+function sortForum(mode) { forumSort = mode; renderForum(); }
+document.getElementById('forumCat').addEventListener('change', renderForum);
+renderForum();
+
+// ================= 破防盲盒机 =================
+const PRIZES = [
+  { id: 'n1', name: '破防语录·随缘款', emoji: '💢', rarity: 'normal', weight: 30, desc: '随机一条扎心语录，适合深夜emo配图。' },
+  { id: 'n2', name: '安慰卡·人间值得', emoji: '🫂', rarity: 'normal', weight: 25, desc: '一张温柔的安慰，收藏备用。' },
+  { id: 'n3', name: '摸鱼券·一小时', emoji: '🐟', rarity: 'normal', weight: 20, desc: '下次想摸鱼时出示，效果随缘。' },
+  { id: 'r1', name: '今日免骂券', emoji: '🎫', rarity: 'rare', weight: 12, desc: '今天谁骂你都免疫，包括你自己。' },
+  { id: 'r2', name: '老板の沉默', emoji: '🤐', rarity: 'rare', weight: 10, desc: '让老板闭嘴一小时（做梦）。' },
+  { id: 'e1', name: '破防星人认证徽章', emoji: '🏅', rarity: 'epic', weight: 2, desc: '资深破防玩家的身份证明。' },
+  { id: 'h1', name: '实体周边·手写书法书签', emoji: '🎁', rarity: 'hidden', weight: 1, desc: '隐藏款！破防星球×书法文创：手写书签一枚，加微信【你的微信】兑换/购买。' },
+];
+const DAILY_LIMIT = 3;
+
+function getGachaState() {
+  const today = new Date().toDateString();
+  let st = { date: '', left: DAILY_LIMIT, coll: {} };
+  try { st = JSON.parse(localStorage.getItem('pofang_gacha') || JSON.stringify(st)); } catch (e) {}
+  if (st.date !== today) { st.date = today; st.left = DAILY_LIMIT; }
+  return st;
+}
+function saveGachaState(st) { localStorage.setItem('pofang_gacha', JSON.stringify(st)); }
+
+function weightedPick() {
+  const total = PRIZES.reduce((s, p) => s + p.weight, 0);
+  let r = Math.random() * total;
+  for (const p of PRIZES) { r -= p.weight; if (r <= 0) return p; }
+  return PRIZES[0];
+}
+
+function renderBoxes() {
+  const row = document.getElementById('boxRow');
+  row.innerHTML = '';
+  for (let i = 0; i < 6; i++) {
+    const d = document.createElement('div');
+    d.className = 'box';
+    d.textContent = '🎁';
+    d.onclick = () => openBox(d);
+    row.appendChild(d);
+  }
+}
+function renderCollection() {
+  const st = getGachaState();
+  const box = document.getElementById('collection');
+  let html = '<h4>📚 我的收集册（' + Object.keys(st.coll).length + '/' + PRIZES.length + '）</h4><div class="coll-row">';
+  PRIZES.forEach(p => {
+    const n = st.coll[p.id] || 0;
+    html += '<div class="coll-item' + (n ? ' got' : '') + '">' + p.emoji + ' ' + p.name +
+            (n ? ' <span class="cnt">×' + n + '</span>' : ' <span class="cnt">未获得</span>') + '</div>';
+  });
+  html += '</div>';
+  box.innerHTML = html;
+  document.getElementById('gachaLeft').textContent = st.left;
+}
+function openBox(el) {
+  const st = getGachaState();
+  if (st.left <= 0) {
+    document.getElementById('prizeCard').innerHTML =
+      '<div class="prize-emoji">😭</div><div class="prize-name">今天的运气用完了</div>' +
+      '<div class="prize-desc">明天再来，或者去论坛看看别人抽到了啥</div>';
+    return;
+  }
+  el.classList.add('shaking');
+  el.textContent = '❓';
+  setTimeout(() => {
+    st.left--;
+    const p = weightedPick();
+    st.coll[p.id] = (st.coll[p.id] || 0) + 1;
+    saveGachaState(st);
+    el.classList.remove('shaking');
+    el.classList.add('opened');
+    el.textContent = p.emoji;
+    const card = document.getElementById('prizeCard');
+    card.className = 'prize-card got';
+    const rarName = { normal: '普通款', rare: '稀有款', epic: '史诗款', hidden: '隐藏款' }[p.rarity];
+    card.innerHTML =
+      '<div class="prize-emoji">' + p.emoji + '</div>' +
+      '<div class="prize-name">' + p.name + '</div>' +
+      '<div class="prize-rarity rarity-' + p.rarity + '">' + rarName + '</div>' +
+      '<div class="prize-desc">' + p.desc + '</div>';
+    document.getElementById('gachaLeft').textContent = st.left;
+    renderCollection();
+  }, 500);
+}
+function resetGachaDemo() {
+  const st = getGachaState();
+  st.left = DAILY_LIMIT;
+  saveGachaState(st);
+  document.getElementById('gachaLeft').textContent = st.left;
+  renderBoxes();
+  document.getElementById('prizeCard').innerHTML =
+    '<div class="prize-emoji">🎁</div><div class="prize-name">次数已重置</div><div class="prize-desc">再抽一次试试手气</div>';
+}
+renderBoxes();
+renderCollection();
+
+// ================= 情绪漂流瓶 =================
+const seedBottles = [
+  { text: '今天加班到十点，地铁上看到有人哭，我也差点没忍住。成年人的崩溃真的就在一瞬间。', feel: 'emo', emp: 128 },
+  { text: '和妈妈视频，她问我过得好不好，我说挺好的。挂掉电话之后哭了好久。', feel: '想念', emp: 96 },
+  { text: '考研二战，租房、失眠、脱发，但我还是不想放弃。有人能给我一点鼓励吗。', feel: '焦虑', emp: 203 },
+  { text: '今天终于把攒了半年的钱打给家里了，虽然不多，但爸妈很开心。值得。', feel: '欣慰', emp: 87 },
+  { text: '被喜欢的女生拒绝了，说不难过是假的，但至少我说出口了，不用再内耗了。', feel: '释然', emp: 64 },
+  { text: '这座城市很大，但我的快乐只有出租屋十平米。今天阳台的多肉发芽了，突然觉得也没那么糟。', feel: '平静', emp: 75 },
+];
+const FEEL_EMOJI = { emo: '🌧️', 想念: '💭', 焦虑: '😰', 欣慰: '🌱', 释然: '🍃', 平静: '🌊', 愤怒: '🔥', 崩溃: '💥', 孤独: '🌙' };
+const BOTTLE_TARGET = 3;
+
+function getBottleState() {
+  const today = new Date().toDateString();
+  let st = { date: '', high: 0, earned: 0, mine: [] };
+  try { st = JSON.parse(localStorage.getItem('pofang_bottles') || JSON.stringify(st)); } catch (e) {}
+  if (st.date !== today) { st.date = today; st.high = 0; st.earned = 0; }
+  return st;
+}
+function saveBottleState(st) { localStorage.setItem('pofang_bottles', JSON.stringify(st)); }
+function getAllBottles() {
+  let local = [];
+  try { local = JSON.parse(localStorage.getItem('pofang_bottle_pool') || '[]'); } catch (e) {}
+  return local.concat(seedBottles);
+}
+function savePool(pool) { localStorage.setItem('pofang_bottle_pool', JSON.stringify(pool)); }
+
+function qualityCheck(text) {
+  const t = text.trim();
+  if (t.length < 10) return { ok: false, msg: '再写长一点嘛～至少 10 个字，情绪才完整（当前 ' + t.length + ' 字）' };
+  if (t.length > 200) return { ok: false, msg: '太长啦，200 字以内，浓缩才是精华' };
+  if (/(.)\1{5,}/.test(t)) return { ok: false, msg: '别复制重复字糊弄我，认真写' };
+  const punct = (t.match(/[，。！？、,.!?~～：:]/g) || []).length;
+  if (punct / t.length > 0.5) return { ok: false, msg: '标点比字还多，这不是情绪是乱码' };
+  if (/^[\d\s\W]+$/.test(t)) return { ok: false, msg: '这不算情绪，重新写写' };
+  const pool = getAllBottles();
+  if (pool.some(b => b.text === t)) return { ok: false, msg: '这条已经漂在海里啦，换个角度再写' };
+  return { ok: true, msg: '✅ 高质量！情绪饱满，已扔进海里' };
+}
+
+function renderBottleUI() {
+  const st = getBottleState();
+  const progress = Math.min(st.high / BOTTLE_TARGET, 1) * 100;
+  document.getElementById('highCount').textContent = st.high;
+  document.getElementById('rewardLeft').textContent = st.earned;
+  const bar = document.getElementById('bottleProgress');
+  bar.innerHTML = '<div class="bar" style="width:' + progress + '%"></div>';
+  // 我的瓶子
+  const mine = document.getElementById('bottleMine');
+  let html = '<h4>📦 我扔过的瓶子（' + st.mine.length + '）</h4><div class="mine-row">';
+  st.mine.slice(0, 8).forEach(b => {
+    html += '<div class="mine-item"><span class="tag">' + (FEEL_EMOJI[b.feel] || '🌊') + '</span> ' + b.text.slice(0, 30) + (b.text.length > 30 ? '…' : '') + '</div>';
+  });
+  html += '</div>';
+  mine.innerHTML = html;
+}
+
+function throwBottle() {
+  const input = document.getElementById('bottleInput');
+  const text = input.value.trim();
+  const q = qualityCheck(text);
+  const tip = document.getElementById('bottleQuality');
+  tip.textContent = q.msg;
+  tip.className = 'bottle-quality ' + (q.ok ? 'good' : 'bad');
+  if (!q.ok) return;
+  // 扔进海里
+  const pool = getAllBottles();
+  pool.unshift({ text: text, feel: '平静', emp: 0 });
+  savePool(pool);
+  // 记录
+  const st = getBottleState();
+  st.high++;
+  st.mine.unshift({ text: text, feel: '平静' });
+  if (st.high % BOTTLE_TARGET === 0) {
+    st.earned++;
+    // 奖励抽奖次数！
+    const gs = getGachaState();
+    gs.left += 1;
+    saveGachaState(gs);
+    document.getElementById('gachaLeft').textContent = gs.left;
+    tip.textContent = '🎉 达成 ' + BOTTLE_TARGET + ' 个高质量瓶子！已获得 1 次抽奖机会，去盲盒机开盒吧！';
+    tip.className = 'bottle-quality good';
+  }
+  saveBottleState(st);
+  input.value = '';
+  renderBottleUI();
+}
+
+let currentBottle = null;
+function fetchBottle() {
+  const pool = getAllBottles();
+  if (!pool.length) { alert('海里还没有瓶子，先扔一个吧'); return; }
+  currentBottle = pool[Math.floor(Math.random() * pool.length)];
+  const card = document.getElementById('bottleCard');
+  card.innerHTML = '<div class="bottle-emoji">' + (FEEL_EMOJI[currentBottle.feel] || '🌊') + '</div>' +
+    '<div class="bottle-text">' + currentBottle.text + '</div>' +
+    '<div class="bottle-meta">匿名 · ' + currentBottle.feel + ' · 🫂 ' + currentBottle.emp + ' 人共情过</div>';
+}
+function empathizeBottle() {
+  if (!currentBottle) { alert('先捞一个瓶子再共情呀'); return; }
+  currentBottle.emp++;
+  const pool = getAllBottles();
+  const i = pool.indexOf(currentBottle);
+  if (i >= 0) { savePool(pool); }
+  const card = document.getElementById('bottleCard');
+  card.innerHTML = '<div class="bottle-emoji">🫂</div>' +
+    '<div class="bottle-text">你共情了这条情绪：<br>' + currentBottle.text.slice(0, 60) + (currentBottle.text.length > 60 ? '…' : '') + '</div>' +
+    '<div class="bottle-meta">共情 +1 · 现在 ' + currentBottle.emp + ' 人共情过</div>';
+}
+renderBottleUI();
+</script>
+</body>
+</html>
