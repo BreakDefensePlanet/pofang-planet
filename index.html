@@ -402,6 +402,28 @@
   }
   .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
   .growth-col2 { display: flex; flex-direction: column; gap: 20px; }
+
+  /* ===== 破防人格测试 v2.3 ===== */
+  .person-emoji { font-size: 72px; animation: pop .5s ease-out; }
+  .person-name {
+    font-size: 30px; font-weight: 900; margin-top: 10px; letter-spacing: 3px;
+    background: linear-gradient(90deg, var(--green), var(--purple), var(--pink));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .person-mood { margin-top: 12px; }
+  .person-mood .chip {
+    display: inline-block; background: rgba(255,61,113,.12); color: var(--pink);
+    border: 1px solid rgba(255,61,113,.35); padding: 4px 14px; border-radius: 20px; font-size: 13px; margin: 3px 4px;
+  }
+  .person-desc { color: var(--text2); font-size: 15px; line-height: 1.8; margin-top: 14px; max-width: 520px; margin-left: auto; margin-right: auto; }
+  .person-quote { margin-top: 14px; color: var(--yellow); font-size: 15px; }
+  .person-tags { margin-top: 12px; }
+  .person-tags .tag {
+    display: inline-block; background: rgba(0,229,160,.08); color: var(--green);
+    border: 1px dashed rgba(0,229,160,.35); padding: 3px 12px; border-radius: 14px; font-size: 12px; margin: 3px;
+  }
+  .person-share { margin-top: 20px; }
+  .person-share .btn { font-size: 14px; }
   @media (max-width: 700px) {
     .growth { grid-template-columns: 1fr; }
     .me-bar { margin-left: 0; }
@@ -423,7 +445,7 @@
     <a href="#launch">吐槽发射</a>
     <a href="#wake">骂醒</a>
     <a href="#trash">垃圾桶</a>
-    <a href="#quiz">破防测试</a>
+    <a href="#quiz">人格测试</a>
     <a href="#wall">树洞</a>
     <a href="#forum">论坛</a>
     <a href="#gacha">抽奖</a>
@@ -539,11 +561,11 @@
   </div>
 </section>
 
-<!-- 破防测试 -->
+<!-- 破防人格测试 -->
 <section id="quiz">
   <div class="sec-title">
-    <h2><span class="g">破</span><span class="p">防</span><span class="y">指</span><span class="g">数</span><span class="p">测</span><span class="y">试</span></h2>
-    <p>测测你今天离原地爆炸还有多远</p>
+    <h2><span class="g">破</span><span class="p">防</span><span class="y">人</span><span class="g">格</span><span class="p">测</span><span class="y">试</span></h2>
+    <p>你是破防星云里的哪一种星人？6 道题测出你的破防人格</p>
   </div>
   <div class="card quiz">
     <div class="q" id="quizQ"></div>
@@ -1170,40 +1192,183 @@ function throwTrash() {
   document.getElementById('trashInput').value = '';
 }
 
-// ================= 破防测试 =================
+// ================= 破防人格测试 v2.3 =================
+const PERSONS = {
+  bailan: { emoji: '🌙', name: '摆烂星人', mood: ['躺平', '摆烂', '咸鱼式佛系'],
+    desc: '你的人生信条：努力不一定会成功，但不努力一定会很轻松。ddl 是第一生产力，你是擅长在最后一刻爆发的行动派。',
+    quote: '别慌，反正明天也会慌。', tags: ['稳定摆烂', '间歇性愧疚', '乐观的咸鱼'] },
+  ganga: { emoji: '😳', name: '尴尬星人', mood: ['社死', '脚趾抠地', '羞耻循环'],
+    desc: '三年前的社死瞬间你至今还记得。你的脚趾在深夜抠出过一整个地下城堡。',
+    quote: '我不是在尴尬，就是在回忆尴尬的路上。', tags: ['社死常客', '回忆杀受害者', '脸皮薄'] },
+  emo: { emoji: '🌧️', name: 'EMO星人', mood: ['深夜emo', '文艺悲伤', '周期性低落'],
+    desc: '网易云评论区常驻选手，耳机一戴，全世界都欠你一个拥抱。你的悲伤自带 BGM。',
+    quote: '我的emo没有文案，只有耳机里的歌单。', tags: ['深夜诗人', '玻璃心', '氛围感悲伤'] },
+  baozao: { emoji: '💥', name: '暴躁星人', mood: ['易燃易爆', '路怒', '键盘侠克制中'],
+    desc: '你的怒气值攒得比余额还快。表面稳如老狗，内心已经炸了八百回。',
+    quote: '我不是脾气大，我是忍得够多了。', tags: ['一触即炸', '嘴上算了心里记仇', '正义使者'] },
+  moyu: { emoji: '🐟', name: '摸鱼星人', mood: ['神游', '拖延', '松弛式焦虑'],
+    desc: '上班上课两小时，神游两小时零一秒。你在摸鱼中完成了一场场高级行为艺术。',
+    quote: '人在工位，心在马尔代夫。', tags: ['ddl战神', '带薪发呆', '摸鱼但心里有数'] },
+  shekong: { emoji: '🐢', name: '社恐星人', mood: ['社交耗竭', '已读不回', '人群恐惧'],
+    desc: '电话响起的那一刻，你已经在心里写好了拒接理由。社交对你来说是一场消耗战。',
+    quote: '别打电话，有事漂流瓶联系。', tags: ['已读不回', '聚会隐身人', '网上重拳出击'] },
+  juanwang: { emoji: '📚', name: '卷王星人', mood: ['内卷斗士', '焦虑式自律', '停不下来'],
+    desc: '你不卷别人，就会被别人卷。你的焦虑是充电器：越焦虑越努力，越努力越焦虑。',
+    quote: '休息？等卷完这波再说。', tags: ['凌晨图书馆', '偷偷努力惊艳所有人', '卷完就后悔'] },
+  liana: { emoji: '💔', name: '恋爱脑星人', mood: ['患得患失', '秒回', '恋爱过山车'],
+    desc: '对方一句"嗯"你能脑补出一部连续剧。你的心情，是对方回复速度的晴雨表。',
+    quote: '他回消息慢，是不是不爱我了？——是的。', tags: ['已读乱回受害者', '自我感动大师', '想太多'] },
+  taohao: { emoji: '🐶', name: '讨好星人', mood: ['不会拒绝', '委屈式压抑', '老好人'],
+    desc: '"帮个忙呗"是你的紧箍咒。你宁可委屈自己，也不想让别人失望。',
+    quote: '好的、行、没问题——你的口头禅，也是你的内耗。', tags: ['便利贴人格', '委屈自己成全别人', '拒绝困难户'] },
+  ganfan: { emoji: '🍜', name: '干饭星人', mood: ['化悲愤为食欲', '治愈式干饭', '饱腹式快乐'],
+    desc: '天大的事，一顿饭解决，解决不了就两顿。你的快乐很简单：干饭，干饭，还是干饭。',
+    quote: 'emo？不存在，干饭人的字典里只有"再来一碗"。', tags: ['快乐干饭人', '吃饱了啥都好说', '深夜食堂常客'] }
+};
 const QUIZ = [
-  { q: '闹钟响了，你的第一反应？', opts: ['直接起床，自律就是我的名字', '按掉再睡五分钟', '把手机扔到墙上'] },
-  { q: '同事/同学当众说你坏话，你会？', opts: ['无所谓，格局打开', '记在小本本上', '当场开怼，谁怕谁'] },
-  { q: '外卖超时 40 分钟，你？', opts: ['体谅骑手，算了', '催单但语气温和', '内心已经开始核爆'] },
-  { q: '老板 23 点发消息："方案改一下，明早要"，你？', opts: ['好的收到，马上改', '内心骂娘表面答应', '已读不回，明早再说'] },
-  { q: '看到别人朋友圈晒上岸/晒工资，你？', opts: ['真心祝福', '酸了一下但马上好了', '破防了，关手机自闭'] },
+  { q: '周末早上 10 点，你通常是？', opts: [
+    { t: '已经起床，开始学习了', p: { juanwang: 2 } },
+    { t: '床上刷手机，一刷两小时', p: { moyu: 1, bailan: 1 } },
+    { t: '继续睡，天塌了也不起', p: { bailan: 2 } },
+    { t: '醒了但不想动，躺着发呆想事情', p: { emo: 2 } },
+    { t: '被电话/噪音吵醒，气炸了', p: { baozao: 2 } },
+    { t: '早就想好今天去哪家吃', p: { ganfan: 2 } } ] },
+  { q: '老板/导师 23 点发消息："方案改一下，明早要"，你？', opts: [
+    { t: '好的收到，马上改', p: { taohao: 2 } },
+    { t: '内心骂娘，表面答应', p: { baozao: 1, taohao: 1 } },
+    { t: '已读不回，明早再说', p: { bailan: 2 } },
+    { t: '凌晨三点改完，还多做了一个版本', p: { juanwang: 2 } },
+    { t: '熬夜改完，越想越委屈', p: { emo: 1, juanwang: 1 } },
+    { t: '先刷了两小时手机才动工', p: { moyu: 2 } } ] },
+  { q: '同事/同学当众说了句让你下不来台的话，你？', opts: [
+    { t: '当场怼回去，谁怕谁', p: { baozao: 2 } },
+    { t: '假装没听见，脸已经红了', p: { ganga: 2 } },
+    { t: '替对方圆场：他开玩笑的', p: { taohao: 2 } },
+    { t: '表面笑笑，晚上回家emo一整晚', p: { emo: 2 } },
+    { t: '空气突然安静，希望自己原地消失', p: { shekong: 2 } },
+    { t: '无所谓，人设早就崩了', p: { bailan: 1, moyu: 1 } } ] },
+  { q: '刷到朋友圈有人晒上岸/晒工资/晒对象，你？', opts: [
+    { t: '破防了，关手机自闭', p: { emo: 2 } },
+    { t: '凭什么？！', p: { baozao: 2 } },
+    { t: '默默打开书/简历', p: { juanwang: 2 } },
+    { t: '酸了一下，划走继续躺', p: { bailan: 1, moyu: 1 } },
+    { t: '点个外卖安慰一下自己', p: { ganfan: 2 } },
+    { t: '想起自己还没对象，更难受了', p: { liana: 1, emo: 1 } } ] },
+  { q: '周末约你聚会，出门前你？', opts: [
+    { t: '想找个理由鸽了', p: { shekong: 2 } },
+    { t: '想起上次聚会的社死瞬间，想挖洞', p: { ganga: 2 } },
+    { t: '对方去我才去，不然没意思', p: { liana: 2 } },
+    { t: '怕拒绝得罪人，硬着头皮去', p: { taohao: 2 } },
+    { t: '为了那顿饭，必须去', p: { ganfan: 2 } },
+    { t: '看心情，心情好就去', p: { bailan: 1, moyu: 1 } } ] },
+  { q: '下班/下课回家，你一般？', opts: [
+    { t: '耳机一戴，谁都不爱', p: { emo: 2 } },
+    { t: '瘫在沙发刷视频到深夜', p: { moyu: 2 } },
+    { t: '学习/搞钱/提升自己', p: { juanwang: 2 } },
+    { t: '打游戏发泄，输了更气', p: { baozao: 2 } },
+    { t: '给暗恋的人发消息，等回复等到失眠', p: { liana: 2 } },
+    { t: '先干饭！吃饱了再说', p: { ganfan: 2 } } ] }
 ];
-let quizIdx = 0, quizScore = 0;
+let quizStep = 0;
+let quizScore = {};
 function renderQuiz() {
-  const q = QUIZ[quizIdx];
-  document.getElementById('quizQ').textContent = 'Q' + (quizIdx + 1) + '. ' + q.q;
+  if (quizStep >= QUIZ.length) return showPersonResult();
+  const q = QUIZ[quizStep];
+  document.getElementById('quizQ').textContent = 'Q' + (quizStep + 1) + '. ' + q.q;
   const opts = document.getElementById('quizOpts');
   const res = document.getElementById('quizResult');
-  opts.innerHTML = ''; res.textContent = '';
-  q.opts.forEach((t, i) => {
+  res.innerHTML = '';
+  opts.innerHTML = '';
+  q.opts.forEach(o => {
     const b = document.createElement('button');
-    b.textContent = t;
+    b.textContent = o.t;
     b.onclick = () => {
-      quizScore += i;
-      quizIdx++;
-      if (quizIdx < QUIZ.length) renderQuiz();
-      else {
-        opts.innerHTML = '';
-        document.getElementById('quizQ').textContent = '🎉 测试完成';
-        const level = quizScore <= 2 ? ['😌 心如止水', '你已经是情绪管理大师，建议开课教别人'] :
-                      quizScore <= 6 ? ['😤 随时待爆', '你离破防只差一根稻草，注意自我保护'] :
-                      ['💥 行走的炸药包', '朋友，你需要的不是测试，是休假+心理咨询'];
-        res.innerHTML = level[0] + '<br><span style="font-size:15px;color:var(--text2);font-weight:400;">' + level[1] + '</span>';
-        quizIdx = 0; quizScore = 0;
-      }
+      for (const k in o.p) quizScore[k] = (quizScore[k] || 0) + o.p[k];
+      quizStep++;
+      renderQuiz();
     };
     opts.appendChild(b);
   });
+}
+function showPersonResult() {
+  const opts = document.getElementById('quizOpts');
+  opts.innerHTML = '';
+  document.getElementById('quizQ').textContent = '🔮 破防人格鉴定完毕';
+  let max = 0, top = [];
+  for (const k in quizScore) {
+    if (quizScore[k] > max) { max = quizScore[k]; top = [k]; }
+    else if (quizScore[k] === max) top.push(k);
+  }
+  const key = top[Math.floor(Math.random() * top.length)];
+  const p = PERSONS[key];
+  const res = document.getElementById('quizResult');
+  res.innerHTML =
+    '<div class="person-emoji">' + p.emoji + '</div>' +
+    '<div class="person-name">' + p.name + '</div>' +
+    '<div class="person-mood">' + p.mood.map(m => '<span class="chip">' + m + '</span>').join('') + '</div>' +
+    '<div class="person-desc">' + p.desc + '</div>' +
+    '<div class="person-quote">💬 ' + p.quote + '</div>' +
+    '<div class="person-tags">' + p.tags.map(t => '<span class="tag">#' + t + '</span>').join('') + '</div>' +
+    '<div class="person-share row" style="justify-content:center;">' +
+      '<button class="btn pink" onclick="makePersonCard()">🃏 生成人格卡</button>' +
+      '<button class="btn" onclick="restartQuiz()" style="background:#1A2029;color:var(--text);border:1px solid #2A3442;">🔄 重测</button>' +
+    '</div>' +
+    '<div class="share-card" id="personShare" style="display:none;">' +
+      '<p style="color:var(--text2);font-size:13px;margin-bottom:8px;">👇 你的破防人格卡（长按保存/右键另存，发朋友圈/群）</p>' +
+      '<img id="personShareImg" alt="破防人格卡">' +
+      '<div class="row" style="justify-content:center;"><a class="btn" id="personDownloadBtn" download="破防人格卡.png" style="font-size:14px;">💾 保存人格卡</a></div>' +
+    '</div>';
+}
+function restartQuiz() {
+  quizStep = 0;
+  quizScore = {};
+  document.getElementById('quizResult').innerHTML = '';
+  renderQuiz();
+}
+function makePersonCard() {
+  const res = document.getElementById('quizResult');
+  const nameEl = res.querySelector('.person-name');
+  if (!nameEl) return;
+  const key = Object.keys(PERSONS).find(k => PERSONS[k].name === nameEl.textContent);
+  if (!key) return;
+  const p = PERSONS[key];
+  const c = document.createElement('canvas');
+  c.width = 720; c.height = 900;
+  const x = c.getContext('2d');
+  const grad = x.createLinearGradient(0, 0, 720, 900);
+  grad.addColorStop(0, '#0F1115'); grad.addColorStop(1, '#1A2030');
+  x.fillStyle = grad; x.fillRect(0, 0, 720, 900);
+  x.strokeStyle = '#00E5A0'; x.lineWidth = 6;
+  x.strokeRect(30, 30, 660, 840);
+  x.strokeStyle = '#FF3D71'; x.lineWidth = 2;
+  x.strokeRect(42, 42, 636, 816);
+  x.textAlign = 'center';
+  x.fillStyle = '#FF3D71'; x.font = 'bold 52px "Microsoft YaHei"';
+  x.fillText('💥 破防星云 · 人格鉴定 💥', 360, 130);
+  x.fillStyle = '#8A97A6'; x.font = '22px "Microsoft YaHei"';
+  x.fillText('测出你的破防人格', 360, 180);
+  x.font = '120px "Segoe UI Emoji", "Microsoft YaHei"';
+  x.fillText(p.emoji, 360, 340);
+  x.fillStyle = '#E8EDF2'; x.font = 'bold 52px "Microsoft YaHei"';
+  x.fillText(p.name, 360, 430);
+  x.fillStyle = '#FFC93C'; x.font = '26px "Microsoft YaHei"';
+  x.fillText('情绪词：' + p.mood.join(' · '), 360, 490);
+  x.fillStyle = '#8A97A6'; x.font = '24px "Microsoft YaHei"';
+  const maxW = 560; const lineH = 40; let y = 570;
+  let line = '';
+  for (const ch of p.quote) {
+    if (x.measureText(line + ch).width > maxW) { x.fillText(line, 360, y); line = ch; y += lineH; }
+    else { line += ch; }
+    if (y > 700) break;
+  }
+  if (line) x.fillText(line, 360, y);
+  x.fillStyle = '#00E5A0'; x.font = '24px "Microsoft YaHei"';
+  x.fillText('—— 来自破防星球的一枚星人 ——', 360, 800);
+  const img = document.getElementById('personShareImg');
+  img.src = c.toDataURL('image/png');
+  document.getElementById('personDownloadBtn').href = img.src;
+  const shareBox = document.getElementById('personShare');
+  if (shareBox) shareBox.style.display = 'block';
 }
 renderQuiz();
 
