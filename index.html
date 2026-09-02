@@ -321,6 +321,91 @@
   }
   .mine-item .tag { color: var(--green); font-size: 11px; }
 
+  /* ===== 成长中心 v2.2 ===== */
+  .me-bar {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: rgba(0,229,160,.1); border: 1px solid rgba(0,229,160,.35);
+    color: var(--green); border-radius: 20px; padding: 5px 14px;
+    font-size: 13px; font-weight: 700; margin-left: 22px; cursor: default;
+    white-space: nowrap;
+  }
+  .me-bar b { color: var(--yellow); }
+  .growth { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .growth .card { padding: 24px; }
+  .g-title { font-size: 17px; font-weight: 800; letter-spacing: 2px; margin-bottom: 6px; }
+  .g-title .g { color: var(--green); } .g-title .p { color: var(--pink); } .g-title .y { color: var(--yellow); }
+  .g-sub { color: var(--text2); font-size: 12.5px; margin-bottom: 14px; letter-spacing: 1px; }
+  .fortune-card {
+    background: linear-gradient(160deg, rgba(155,92,255,.14), rgba(0,229,160,.06));
+    border: 1px solid rgba(155,92,255,.3); border-radius: 14px;
+    padding: 18px 20px; text-align: center;
+  }
+  .fortune-lv { font-size: 30px; font-weight: 900; letter-spacing: 4px; }
+  .fortune-lv.good { color: var(--green); } .fortune-lv.mid { color: var(--yellow); } .fortune-lv.bad { color: var(--pink); }
+  .fortune-txt { color: var(--text2); font-size: 13px; margin-top: 8px; line-height: 1.7; }
+  .fortune-tip { color: #4A5666; font-size: 11px; margin-top: 10px; }
+  .sign-btn {
+    width: 100%; margin-top: 14px; background: linear-gradient(135deg, var(--green), #00B87E);
+    color: #0B0E13; border: none; border-radius: 14px; padding: 14px;
+    font-size: 17px; font-weight: 900; letter-spacing: 3px; cursor: pointer; font-family: inherit;
+    transition: transform .15s, opacity .2s;
+  }
+  .sign-btn:hover { transform: translateY(-2px); }
+  .sign-btn.done { background: #1A2029; color: var(--text2); border: 1px solid #2A3442; cursor: default; }
+  .streak-row { display: flex; gap: 6px; justify-content: center; margin-top: 12px; }
+  .streak-dot { width: 26px; height: 26px; border-radius: 8px; background: #1A2029; border: 1px solid #2A3442;
+    display: flex; align-items: center; justify-content: center; font-size: 12px; color: var(--text2); }
+  .streak-dot.on { background: rgba(0,229,160,.15); border-color: var(--green); color: var(--green); }
+  .task-item {
+    display: flex; align-items: center; gap: 10px; padding: 9px 12px;
+    background: #0B0E13; border: 1px solid #222831; border-radius: 12px; margin-top: 8px;
+    font-size: 13.5px; color: var(--text2);
+  }
+  .task-item .t-ico { font-size: 17px; }
+  .task-item .t-name { flex: 1; }
+  .task-item .t-reward { color: var(--yellow); font-size: 12px; font-weight: 700; }
+  .task-item.done { border-color: rgba(0,229,160,.4); color: var(--text); background: rgba(0,229,160,.05); }
+  .task-item.done .t-name { text-decoration: line-through; color: var(--text2); }
+  .task-all-btn { width: 100%; margin-top: 14px; background: linear-gradient(135deg, var(--pink), #C2185B);
+    color: #fff; border: none; border-radius: 12px; padding: 12px; font-size: 15px; font-weight: 800;
+    cursor: pointer; font-family: inherit; letter-spacing: 2px; transition: transform .15s; }
+  .task-all-btn:hover { transform: translateY(-2px); }
+  .task-all-btn.done { background: #1A2029; color: var(--text2); border: 1px solid #2A3442; cursor: default; }
+  .task-prog { height: 8px; background: #0B0E13; border-radius: 5px; overflow: hidden; margin-top: 12px; border: 1px solid #222831; }
+  .task-prog .bar { height: 100%; background: linear-gradient(90deg, var(--green), var(--yellow)); width: 0%; transition: width .4s; }
+  .badge-row { display: flex; flex-wrap: wrap; gap: 10px; }
+  .badge {
+    width: 88px; background: #1A2029; border: 1px solid #222831; border-radius: 12px;
+    padding: 10px 6px; text-align: center; transition: all .2s;
+  }
+  .badge .b-ico { font-size: 26px; filter: grayscale(1); opacity: .35; }
+  .badge .b-name { font-size: 11px; color: var(--text2); margin-top: 5px; }
+  .badge.got { border-color: rgba(255,201,60,.5); background: rgba(255,201,60,.06); }
+  .badge.got .b-ico { filter: none; opacity: 1; }
+  .badge.got .b-name { color: var(--yellow); }
+  .mood-row { display: flex; gap: 10px; justify-content: center; margin-top: 8px; flex-wrap: wrap; }
+  .mood-pick {
+    background: #1A2029; border: 1px solid #2A3442; border-radius: 14px; padding: 10px 14px;
+    font-size: 15px; cursor: pointer; font-family: inherit; color: var(--text); transition: all .2s;
+  }
+  .mood-pick:hover { transform: translateY(-3px); border-color: var(--green); }
+  .mood-pick.sel { border-color: var(--pink); background: rgba(255,61,113,.12); }
+  .mood-tip { text-align: center; color: var(--text2); font-size: 12.5px; margin-top: 10px; }
+  .mood-chart { margin-top: 12px; background: #0B0E13; border-radius: 12px; padding: 10px; border: 1px solid #222831; }
+  .mood-chart canvas { width: 100%; height: 120px; display: block; }
+  .mood-empty { text-align: center; color: #4A5666; font-size: 12.5px; padding: 24px 0; }
+  .toast {
+    position: fixed; top: 70px; left: 50%; transform: translateX(-50%) translateY(-10px);
+    background: rgba(15,17,21,.95); border: 1px solid var(--green); color: var(--green);
+    padding: 10px 22px; border-radius: 30px; font-size: 14px; font-weight: 700; z-index: 999;
+    opacity: 0; transition: all .3s; pointer-events: none; letter-spacing: 1px;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  .growth-col2 { display: flex; flex-direction: column; gap: 20px; }
+  @media (max-width: 700px) {
+    .growth { grid-template-columns: 1fr; }
+    .me-bar { margin-left: 0; }
+  }
   @media (max-width: 700px) {
     .hero h1 { font-size: 42px; }
     .wall { grid-template-columns: 1fr; }
@@ -333,6 +418,8 @@
 <nav>
   <div class="logo">💥 破防星球<em>.</em></div>
   <div>
+    <span class="me-bar" id="meBar">💎 0 · 🔥 0天</span>
+    <a href="#growth">成长</a>
     <a href="#launch">吐槽发射</a>
     <a href="#wake">骂醒</a>
     <a href="#trash">垃圾桶</a>
@@ -354,6 +441,48 @@
   <a class="cta" href="#launch">开始发泄 ↓</a>
   <div class="hint">📢 今日星球电量：100% 愤怒</div>
 </header>
+
+<!-- 成长中心 -->
+<section id="growth">
+  <div class="sec-title">
+    <h2><span class="g">成</span><span class="p">长</span><span class="y">中</span><span class="g">心</span></h2>
+    <p>签到 · 任务 · 成就 · 心情档案 —— 每天来星球打卡，攒你的破防勋章</p>
+  </div>
+  <div class="growth">
+    <div class="card">
+      <div class="g-title">🍀 今日运势</div>
+      <div class="g-sub">每天都不一样，先看看今天的手气</div>
+      <div class="fortune-card">
+        <div class="fortune-lv" id="fortuneLv">🔮 掐指一算</div>
+        <div class="fortune-txt" id="fortuneTxt">正在打开天眼……</div>
+        <div class="fortune-tip">仅供娱乐 · 信则有不信则无</div>
+      </div>
+      <button class="sign-btn" id="signBtn" onclick="doSign()">🔥 每日签到 +10</button>
+      <div class="streak-row" id="streakRow"></div>
+    </div>
+    <div class="growth-col2">
+      <div class="card">
+        <div class="g-title">📋 今日任务 <span style="font-size:12px;color:var(--text2);font-weight:400;" id="taskCount"></span></div>
+        <div class="g-sub">完成任务攒积分，全完成还有额外大奖</div>
+        <div id="taskList"></div>
+        <div class="task-prog"><div class="bar" id="taskBar"></div></div>
+        <button class="task-all-btn" id="taskAllBtn" onclick="claimTaskReward()">🎁 领取今日全勤奖 +30</button>
+      </div>
+      <div class="card">
+        <div class="g-title">💖 今日心情</div>
+        <div class="g-sub">每天记录一下，生成你的情绪曲线</div>
+        <div class="mood-row" id="moodRow"></div>
+        <div class="mood-tip" id="moodTip"></div>
+        <div class="mood-chart" id="moodChart"><div class="mood-empty">打卡几天后，这里会出现你的心情曲线 📈</div></div>
+      </div>
+    </div>
+    <div class="card" style="grid-column:1/-1;">
+      <div class="g-title">🏆 成就徽章墙 <span style="font-size:12px;color:var(--text2);font-weight:400;" id="badgeCount"></span></div>
+      <div class="g-sub">在星球上留下的每一步，都算数</div>
+      <div class="badge-row" id="badgeRow"></div>
+    </div>
+  </div>
+</section>
 
 <!-- 吐槽发射器 -->
 <section id="launch">
@@ -622,6 +751,295 @@
 </footer>
 
 <script>
+// ================= 成长系统 v2.2（积分/签到/任务/成就/运势/心情） =================
+const ME_KEY = 'pofang_me';
+const LEVELS = [
+  [0, '破防萌新'], [50, '破防学徒'], [150, '破防老油条'], [300, '破防战士'],
+  [500, '破防长老'], [800, '破防魔王'], [1200, '星球管理员'], [1800, '破防星球之王']
+];
+const BADGES = [
+  { id: 'first', ico: '🌱', name: '首吐成功', desc: '发射第一条吐槽', test: m => m.stats.rant >= 1 },
+  { id: 'streak7', ico: '🔥', name: '七日连签', desc: '连续签到 7 天', test: m => m.streak >= 7 },
+  { id: 'mood7', ico: '💊', name: '情绪战士', desc: '心情打卡 7 次', test: m => m.moods.length >= 7 },
+  { id: 'wall5', ico: '🧾', name: '树洞常客', desc: '贴树洞 5 条', test: m => m.stats.wall >= 5 },
+  { id: 'thread5', ico: '💬', name: '论坛水王', desc: '发帖 5 个', test: m => m.stats.thread >= 5 },
+  { id: 'spin10', ico: '🎰', name: '抽奖狂魔', desc: '抽奖 10 次', test: m => m.stats.spin >= 10 },
+  { id: 'emp10', ico: '🫂', name: '共情天使', desc: '共情 10 次', test: m => m.stats.emp >= 10 },
+  { id: 'rich', ico: '💎', name: '积分大户', desc: '积分达 500', test: m => m.points >= 500 }
+];
+const MOODS = [
+  { v: 5, ico: '😄', name: '元气满满' },
+  { v: 4, ico: '🙂', name: '还行' },
+  { v: 3, ico: '😐', name: '一般般' },
+  { v: 2, ico: '😤', name: '烦躁' },
+  { v: 1, ico: '💔', name: '想哭' }
+];
+const FORTUNES = [
+  { lv: '大吉', cls: 'good', txt: '今天诸事顺遂，适合把烦心事发射到外太空。' },
+  { lv: '吉', cls: 'good', txt: '小确幸正在赶来的路上，记得抬头看看。' },
+  { lv: '中吉', cls: 'mid', txt: '今天宜摸鱼，忌内卷，该摆就摆。' },
+  { lv: '小凶', cls: 'bad', txt: '今天可能被生活小捶一下，捶完记得来星球回血。' },
+  { lv: '大凶', cls: 'bad', txt: '诸事不宜？不，宜来破防星球狂骂十分钟。' }
+];
+const TASKS = [
+  { id: 'sign', ico: '🔥', name: '签到打卡', reward: '+10' },
+  { id: 'rant', ico: '🚀', name: '发射一条吐槽', reward: '+5' },
+  { id: 'wall', ico: '📌', name: '贴一条树洞', reward: '+5' },
+  { id: 'bottle', ico: '🎣', name: '捞一个漂流瓶', reward: '+3' }
+];
+
+function getMe() {
+  const today = new Date().toDateString();
+  let m = { points: 0, streak: 0, lastSign: '', signDates: [], tasks: { date: '', done: {} },
+    taskReward: false, badges: [], moods: [], likeDay: '', likeCount: 0,
+    stats: { rant: 0, wall: 0, thread: 0, reply: 0, like: 0, spin: 0, emp: 0, bottle: 0, sign: 0, mood: 0 } };
+  try { m = JSON.parse(localStorage.getItem(ME_KEY) || JSON.stringify(m)); } catch (e) {}
+  if (m.tasks.date !== today) { m.tasks = { date: today, done: {} }; m.taskReward = false; }
+  if (m.likeDay !== today) { m.likeDay = today; m.likeCount = 0; }
+  if (m.lastSign) {
+    const y = new Date(Date.now() - 86400000).toDateString();
+    if (m.lastSign !== today && m.lastSign !== y) m.streak = 0;
+  }
+  return m;
+}
+function saveMe(m) { localStorage.setItem(ME_KEY, JSON.stringify(m)); }
+function levelOf(points) {
+  let lv = LEVELS[0][1];
+  for (const l of LEVELS) if (points >= l[0]) lv = l[1];
+  return lv;
+}
+let toastTimer = null;
+function toast(msg) {
+  let t = document.getElementById('pfToast');
+  if (!t) { t = document.createElement('div'); t.id = 'pfToast'; t.className = 'toast'; document.body.appendChild(t); }
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 1600);
+}
+function addPoints(n, msg) {
+  const m = getMe();
+  m.points += n;
+  saveMe(m);
+  updateMeBar();
+  if (msg) toast(msg);
+  checkBadges();
+  renderTasks();
+}
+function addStat(key) {
+  const m = getMe();
+  m.stats[key] = (m.stats[key] || 0) + 1;
+  saveMe(m);
+  checkBadges();
+}
+function markTask(id) {
+  const m = getMe();
+  if (!m.tasks.done[id]) { m.tasks.done[id] = true; saveMe(m); renderTasks(); }
+}
+function likeBonus() {
+  const m = getMe();
+  if (m.likeCount < 10) { m.likeCount++; m.points += 2; saveMe(m); updateMeBar(); return true; }
+  return false;
+}
+function updateMeBar() {
+  const el = document.getElementById('meBar');
+  if (!el) return;
+  const m = getMe();
+  el.textContent = '💎 ' + m.points + ' · 🔥 ' + m.streak + '天 · ' + levelOf(m.points);
+}
+function doSign() {
+  const m = getMe();
+  const today = new Date().toDateString();
+  if (m.lastSign === today) { toast('今天已经签到过啦，明天再来 🔥'); return; }
+  const y = new Date(Date.now() - 86400000).toDateString();
+  m.streak = (m.lastSign === y) ? m.streak + 1 : 1;
+  m.lastSign = today;
+  m.signDates.push(today);
+  m.stats.sign++;
+  const gain = (m.streak % 7 === 0) ? 30 : 10;
+  m.points += gain;
+  saveMe(m);
+  markTask('sign');
+  updateMeBar();
+  renderStreak();
+  const btn = document.getElementById('signBtn');
+  btn.classList.add('done'); btn.disabled = true;
+  btn.textContent = '✅ 今日已签到（连签 ' + m.streak + ' 天' + (m.streak % 7 === 0 ? ' · 大奖 +30！' : '）');
+  toast('🔥 签到成功 +' + gain + ' 💎　连签 ' + m.streak + ' 天');
+}
+function renderStreak() {
+  const row = document.getElementById('streakRow');
+  if (!row) return;
+  const m = getMe();
+  row.innerHTML = '';
+  for (let i = 0; i < 7; i++) {
+    const d = document.createElement('div');
+    d.className = 'streak-dot' + (i < m.streak ? ' on' : '');
+    d.textContent = (i < m.streak) ? '🔥' : (i + 1);
+    row.appendChild(d);
+  }
+}
+function todayFortune() {
+  const now = new Date();
+  const seed = now.getFullYear() * 10000 + (now.getMonth() + 1) * 100 + now.getDate();
+  const f = FORTUNES[(seed * 2654435761 % 4294967296) % FORTUNES.length];
+  const el = document.getElementById('fortuneLv');
+  el.textContent = f.lv;
+  el.className = 'fortune-lv ' + f.cls;
+  document.getElementById('fortuneTxt').textContent = f.txt;
+}
+function renderTasks() {
+  const list = document.getElementById('taskList');
+  if (!list) return;
+  const m = getMe();
+  list.innerHTML = '';
+  let done = 0;
+  TASKS.forEach(t => {
+    const isDone = !!m.tasks.done[t.id];
+    if (isDone) done++;
+    const d = document.createElement('div');
+    d.className = 'task-item' + (isDone ? ' done' : '');
+    d.innerHTML = '<span class="t-ico">' + (isDone ? '✅' : t.ico) + '</span><span class="t-name">' + t.name + '</span><span class="t-reward">' + t.reward + '</span>';
+    list.appendChild(d);
+  });
+  document.getElementById('taskCount').textContent = done + '/' + TASKS.length;
+  document.getElementById('taskBar').style.width = (done / TASKS.length * 100) + '%';
+  const btn = document.getElementById('taskAllBtn');
+  if (done === TASKS.length) {
+    if (m.taskReward) { btn.classList.add('done'); btn.disabled = true; btn.textContent = '✅ 今日全勤奖已领取'; }
+    else { btn.classList.remove('done'); btn.disabled = false; btn.textContent = '🎁 领取今日全勤奖 +30'; }
+  } else {
+    btn.classList.add('done'); btn.disabled = true; btn.textContent = '🎁 完成全部任务后领取 +30';
+  }
+}
+function claimTaskReward() {
+  const m = getMe();
+  if (Object.keys(m.tasks.done).length < TASKS.length || m.taskReward) return;
+  m.taskReward = true;
+  m.points += 30;
+  saveMe(m);
+  updateMeBar();
+  renderTasks();
+  toast('🎉 今日全勤奖 +30 💎');
+}
+function checkBadges() {
+  const m = getMe();
+  let changed = false;
+  BADGES.forEach(b => {
+    if (!m.badges.includes(b.id) && b.test(m)) { m.badges.push(b.id); changed = true; }
+  });
+  if (changed) {
+    saveMe(m);
+    renderBadges();
+    toast('🏆 解锁新成就！');
+  }
+}
+function renderBadges() {
+  const row = document.getElementById('badgeRow');
+  if (!row) return;
+  const m = getMe();
+  row.innerHTML = '';
+  BADGES.forEach(b => {
+    const got = m.badges.includes(b.id);
+    const d = document.createElement('div');
+    d.className = 'badge' + (got ? ' got' : '');
+    d.title = b.desc;
+    d.innerHTML = '<div class="b-ico">' + b.ico + '</div><div class="b-name">' + b.name + '</div>';
+    row.appendChild(d);
+  });
+  document.getElementById('badgeCount').textContent = m.badges.length + '/' + BADGES.length;
+}
+function renderMoods() {
+  const row = document.getElementById('moodRow');
+  if (!row) return;
+  const m = getMe();
+  const today = new Date().toDateString();
+  const todays = m.moods.find(x => x.d === today);
+  row.innerHTML = '';
+  MOODS.forEach(md => {
+    const b = document.createElement('button');
+    b.className = 'mood-pick' + (todays && todays.v === md.v ? ' sel' : '');
+    b.textContent = md.ico + ' ' + md.name;
+    b.onclick = () => pickMood(md.v);
+    row.appendChild(b);
+  });
+  document.getElementById('moodTip').textContent = todays
+    ? '✅ 今天已打卡：' + (MOODS.find(x => x.v === todays.v) || { ico: '🙂' }).ico + '　连续打卡 ' + moodStreak(m) + ' 天'
+    : '选一个今天的心情，+5 💎';
+  drawMoodChart(m);
+}
+function pickMood(v) {
+  const m = getMe();
+  const today = new Date().toDateString();
+  if (m.moods.find(x => x.d === today)) { toast('今天的心情已记录，明天再来 💖'); return; }
+  m.moods.push({ d: today, v: v });
+  m.stats.mood++;
+  m.points += 5;
+  saveMe(m);
+  updateMeBar();
+  renderMoods();
+  checkBadges();
+  toast('💖 心情已记录 +5 💎');
+}
+function moodStreak(m) {
+  let n = 0;
+  const set = new Set(m.moods.map(x => x.d));
+  let d = new Date();
+  for (let i = 0; i < 365; i++) {
+    if (set.has(d.toDateString())) n++;
+    else if (i > 0) break;
+    d = new Date(d.getTime() - 86400000);
+  }
+  return n;
+}
+function drawMoodChart(m) {
+  const box = document.getElementById('moodChart');
+  if (!box) return;
+  if (m.moods.length === 0) { box.innerHTML = '<div class="mood-empty">打卡几天后，这里会出现你的心情曲线 📈</div>'; return; }
+  box.innerHTML = '<canvas id="moodCanvas"></canvas>';
+  const c = document.getElementById('moodCanvas');
+  const W = box.clientWidth || 600, H = 120;
+  c.width = W * 2; c.height = H * 2;
+  c.style.width = W + 'px'; c.style.height = H + 'px';
+  const x = c.getContext('2d');
+  x.scale(2, 2);
+  const data = m.moods.slice(-7);
+  const pad = 20;
+  const step = (W - pad * 2) / Math.max(data.length - 1, 1);
+  x.strokeStyle = '#2A3442'; x.lineWidth = 1;
+  x.beginPath(); x.moveTo(pad, H / 2); x.lineTo(W - pad, H / 2); x.stroke();
+  x.strokeStyle = '#00E5A0'; x.lineWidth = 2.5; x.lineJoin = 'round';
+  x.beginPath();
+  data.forEach((d, i) => {
+    const px = pad + i * step;
+    const py = H - 12 - (d.v - 1) / 4 * (H - 24);
+    if (i === 0) x.moveTo(px, py); else x.lineTo(px, py);
+  });
+  x.stroke();
+  data.forEach((d, i) => {
+    const px = pad + i * step;
+    const py = H - 12 - (d.v - 1) / 4 * (H - 24);
+    x.beginPath(); x.arc(px, py, 4, 0, Math.PI * 2);
+    x.fillStyle = d.v <= 2 ? '#FF3D71' : d.v === 3 ? '#FFC93C' : '#00E5A0';
+    x.fill();
+  });
+}
+function initGrowth() {
+  updateMeBar();
+  renderStreak();
+  todayFortune();
+  renderTasks();
+  renderBadges();
+  renderMoods();
+  const m = getMe();
+  if (m.lastSign === new Date().toDateString()) {
+    const btn = document.getElementById('signBtn');
+    btn.classList.add('done'); btn.disabled = true;
+    btn.textContent = '✅ 今日已签到（连签 ' + m.streak + ' 天）';
+  }
+}
+initGrowth();
+
 // ================= 吐槽发射 =================
 const RANDOM_RANTS = [
   "论文改了八遍，导师说还是初稿水平，我人麻了……",
@@ -650,6 +1068,7 @@ function launchRant() {
   setTimeout(() => document.body.classList.remove('shake'), 500);
   setTimeout(() => { makeCard(txt); card.style.display = 'block'; }, 900);
   document.getElementById('rantInput').value = '';
+  markTask('rant'); addStat('rant'); addPoints(5, '🚀 吐槽发射成功 +5 💎');
 }
 
 function randomRant() {
@@ -827,10 +1246,12 @@ function postWall() {
   localStorage.setItem('pofang_posts', JSON.stringify(local));
   document.getElementById('wallInput').value = '';
   loadWall();
+  markTask('wall'); addStat('wall'); addPoints(5, '📌 已贴上树洞墙 +5 💎');
 }
 function likePost(i) {
   const posts = getPosts();
   posts[i].likes++;
+  addStat('like'); likeBonus();
   const local = posts.slice(seedPosts.length);
   localStorage.setItem('pofang_posts', JSON.stringify(local));
   loadWall();
@@ -910,11 +1331,12 @@ saveForumLocal(posts);
 document.getElementById('forumTitle').value = '';
 document.getElementById('forumContent').value = '';
 renderForum();
+addStat('thread'); addPoints(10, '📢 发帖成功 +10 💎');
 }
 function likeThread(id) {
 const posts = getForum();
 const p = posts.find(x => x.id === id);
-if (p) { p.likes++; saveForumLocal(posts); renderForum(); }
+if (p) { p.likes++; saveForumLocal(posts); renderForum(); addStat('like'); likeBonus(); }
 }
 function toggleReplies(id) {
 const posts = getForum();
@@ -933,6 +1355,7 @@ if (p) {
   p._open = true;
   saveForumLocal(posts);
   renderForum();
+  addStat('reply'); addPoints(3, '💬 回复成功 +3 💎');
 }
 }
 function sortForum(mode) { forumSort = mode; renderForum(); }
@@ -1045,6 +1468,7 @@ function spinWheel() {
   st.left--;
   saveGachaState(st);
   document.getElementById('gachaLeft').textContent = st.left;
+  addStat('spin'); addPoints(5, '🎰 抽奖中……');
   setTimeout(() => {
     spinning = false;
     showPrize(p);
@@ -1199,6 +1623,7 @@ function fetchBottle() {
   const pool = getAllBottles();
   if (!pool.length) { alert('海里还没有瓶子，先扔一个吧'); return; }
   currentBottle = pool[Math.floor(Math.random() * pool.length)];
+  markTask('bottle'); addStat('bottle'); addPoints(3, '🎣 捞到瓶子 +3 💎');
   const card = document.getElementById('bottleCard');
   card.innerHTML = '<div class="bottle-emoji">' + (FEEL_EMOJI[currentBottle.feel] || '🌊') + '</div>' +
     '<div class="bottle-text">' + currentBottle.text + '</div>' +
@@ -1207,6 +1632,7 @@ function fetchBottle() {
 function empathizeBottle() {
   if (!currentBottle) { alert('先捞一个瓶子再共情呀'); return; }
   currentBottle.emp++;
+  addStat('emp'); addPoints(2, '🫂 共情 +2 💎');
   const pool = getAllBottles();
   const i = pool.indexOf(currentBottle);
   if (i >= 0) { savePool(pool); }
