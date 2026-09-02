@@ -424,6 +424,13 @@
   }
   .person-share { margin-top: 20px; }
   .person-share .btn { font-size: 14px; }
+  .quiz-prog {
+    display: flex; align-items: center; gap: 12px; margin-bottom: 16px;
+    background: #0B0E13; border: 1px solid #222831; border-radius: 10px; padding: 10px 14px;
+  }
+  .quiz-prog .bar { flex: 1; height: 8px; background: #1A2029; border-radius: 5px; overflow: hidden; }
+  .quiz-prog .bar i { display: block; height: 100%; width: 0%; background: linear-gradient(90deg, var(--green), var(--yellow)); transition: width .3s; }
+  .quiz-prog span { color: var(--text2); font-size: 12.5px; white-space: nowrap; }
   @media (max-width: 700px) {
     .growth { grid-template-columns: 1fr; }
     .me-bar { margin-left: 0; }
@@ -565,9 +572,10 @@
 <section id="quiz">
   <div class="sec-title">
     <h2><span class="g">破</span><span class="p">防</span><span class="y">人</span><span class="g">格</span><span class="p">测</span><span class="y">试</span></h2>
-    <p>你是破防星云里的哪一种星人？6 道题测出你的破防人格</p>
+    <p>你是破防星云里的哪一种星人？60 道题，测出你的真实破防人格</p>
   </div>
   <div class="card quiz">
+    <div class="quiz-prog"><div class="bar"><i id="quizBar"></i></div><span id="quizPos">1/60</span></div>
     <div class="q" id="quizQ"></div>
     <div class="opts" id="quizOpts"></div>
     <div class="result" id="quizResult"></div>
@@ -1226,53 +1234,451 @@ const PERSONS = {
     quote: 'emo？不存在，干饭人的字典里只有"再来一碗"。', tags: ['快乐干饭人', '吃饱了啥都好说', '深夜食堂常客'] }
 };
 const QUIZ = [
-  { q: '周末早上 10 点，你通常是？', opts: [
-    { t: '已经起床，开始学习了', p: { juanwang: 2 } },
-    { t: '床上刷手机，一刷两小时', p: { moyu: 1, bailan: 1 } },
-    { t: '继续睡，天塌了也不起', p: { bailan: 2 } },
-    { t: '醒了但不想动，躺着发呆想事情', p: { emo: 2 } },
-    { t: '被电话/噪音吵醒，气炸了', p: { baozao: 2 } },
-    { t: '早就想好今天去哪家吃', p: { ganfan: 2 } } ] },
-  { q: '老板/导师 23 点发消息："方案改一下，明早要"，你？', opts: [
-    { t: '好的收到，马上改', p: { taohao: 2 } },
-    { t: '内心骂娘，表面答应', p: { baozao: 1, taohao: 1 } },
-    { t: '已读不回，明早再说', p: { bailan: 2 } },
-    { t: '凌晨三点改完，还多做了一个版本', p: { juanwang: 2 } },
-    { t: '熬夜改完，越想越委屈', p: { emo: 1, juanwang: 1 } },
-    { t: '先刷了两小时手机才动工', p: { moyu: 2 } } ] },
-  { q: '同事/同学当众说了句让你下不来台的话，你？', opts: [
-    { t: '当场怼回去，谁怕谁', p: { baozao: 2 } },
-    { t: '假装没听见，脸已经红了', p: { ganga: 2 } },
-    { t: '替对方圆场：他开玩笑的', p: { taohao: 2 } },
-    { t: '表面笑笑，晚上回家emo一整晚', p: { emo: 2 } },
-    { t: '空气突然安静，希望自己原地消失', p: { shekong: 2 } },
-    { t: '无所谓，人设早就崩了', p: { bailan: 1, moyu: 1 } } ] },
-  { q: '刷到朋友圈有人晒上岸/晒工资/晒对象，你？', opts: [
-    { t: '破防了，关手机自闭', p: { emo: 2 } },
-    { t: '凭什么？！', p: { baozao: 2 } },
-    { t: '默默打开书/简历', p: { juanwang: 2 } },
-    { t: '酸了一下，划走继续躺', p: { bailan: 1, moyu: 1 } },
-    { t: '点个外卖安慰一下自己', p: { ganfan: 2 } },
-    { t: '想起自己还没对象，更难受了', p: { liana: 1, emo: 1 } } ] },
-  { q: '周末约你聚会，出门前你？', opts: [
-    { t: '想找个理由鸽了', p: { shekong: 2 } },
-    { t: '想起上次聚会的社死瞬间，想挖洞', p: { ganga: 2 } },
-    { t: '对方去我才去，不然没意思', p: { liana: 2 } },
-    { t: '怕拒绝得罪人，硬着头皮去', p: { taohao: 2 } },
-    { t: '为了那顿饭，必须去', p: { ganfan: 2 } },
-    { t: '看心情，心情好就去', p: { bailan: 1, moyu: 1 } } ] },
-  { q: '下班/下课回家，你一般？', opts: [
-    { t: '耳机一戴，谁都不爱', p: { emo: 2 } },
-    { t: '瘫在沙发刷视频到深夜', p: { moyu: 2 } },
-    { t: '学习/搞钱/提升自己', p: { juanwang: 2 } },
-    { t: '打游戏发泄，输了更气', p: { baozao: 2 } },
-    { t: '给暗恋的人发消息，等回复等到失眠', p: { liana: 2 } },
-    { t: '先干饭！吃饱了再说', p: { ganfan: 2 } } ] }
+  // ===== 工作/学业 =====
+  { q: '周一早会，老板说"今天讲下进度"，你？', opts: [
+    { t: '昨晚没做，现场现编', p: { bailan: 2 } },
+    { t: '昨晚做完了三页 PPT', p: { juanwang: 2 } },
+    { t: '打开文档假装在记笔记', p: { moyu: 1 } },
+    { t: '抢着说"我这边很快"，怕被点名', p: { taohao: 1 } },
+    { t: '心里骂"又开会"，脸上微笑', p: { baozao: 1 } },
+    { t: '祈祷千万别点到我', p: { shekong: 1 } } ] },
+  { q: '同事把活推给你，说"你最靠谱"，你？', opts: [
+    { t: '行吧，我接', p: { taohao: 2 } },
+    { t: '心里mmp，脸上笑嘻嘻', p: { baozao: 2 } },
+    { t: '接了但拖到下周', p: { bailan: 1 } },
+    { t: '不知道咋拒绝，尬住了', p: { ganga: 1 } },
+    { t: '接了，但开始摸鱼', p: { moyu: 1 } },
+    { t: '是喜欢的同事的话，更没法拒绝', p: { liana: 1 } } ] },
+  { q: '领导画饼"好好干，明年升你"，你？', opts: [
+    { t: '心里凉了半截，又不敢说', p: { emo: 2 } },
+    { t: '暗暗较劲，明年必须升', p: { juanwang: 2 } },
+    { t: '饼吃多了，免疫了', p: { bailan: 1 } },
+    { t: '升不升无所谓，先把今天的鱼摸了', p: { moyu: 1 } },
+    { t: '好的领导，我一定努力', p: { taohao: 1 } },
+    { t: '升个屁，工资先涨了再说', p: { baozao: 1 } } ] },
+  { q: '导师/领导说"你这不行啊"，你？', opts: [
+    { t: '晚上失眠，反复想这句话', p: { emo: 2 } },
+    { t: '连夜改，改到满意为止', p: { juanwang: 2 } },
+    { t: '脸红到脖子根', p: { ganga: 2 } },
+    { t: '表面虚心，心里不服', p: { baozao: 1 } },
+    { t: '哦，那就不行呗', p: { bailan: 1 } },
+    { t: '对不起，我马上改', p: { taohao: 1 } } ] },
+  { q: '小组作业/项目，队友全在划水，你？', opts: [
+    { t: '想骂人，但忍住了', p: { baozao: 2 } },
+    { t: '一个人扛完，还拿了高分', p: { juanwang: 2 } },
+    { t: '大家一起划，谁也不说谁', p: { moyu: 1 } },
+    { t: '默默多做点，怕进度完不成', p: { taohao: 1 } },
+    { t: '反正有人会做，躺', p: { bailan: 1 } },
+    { t: '为什么总是我操心', p: { emo: 1 } } ] },
+  { q: '快下班了突然加需求"今天就要"，你？', opts: [
+    { t: '内心核爆，表面"好的呢"', p: { baozao: 2 } },
+    { t: '拖到 23 点才动手', p: { moyu: 2 } },
+    { t: '加就加，顺手优化了旧代码', p: { juanwang: 1 } },
+    { t: '好的，马上安排', p: { taohao: 1 } },
+    { t: '加班到深夜，越想越委屈', p: { emo: 1 } },
+    { t: '明天再说，天塌了有老板顶着', p: { bailan: 1 } } ] },
+  // ===== 社交 =====
+  { q: '聚会上一群人突然安静，你？', opts: [
+    { t: '总觉得是自己说错了话', p: { ganga: 2 } },
+    { t: '希望别有人 cue 我', p: { shekong: 2 } },
+    { t: '谁带头安静谁尴尬', p: { baozao: 1 } },
+    { t: '趁安静刷手机', p: { moyu: 1 } },
+    { t: '主动找话题圆场', p: { taohao: 1 } },
+    { t: '无所谓，该吃吃该喝喝', p: { bailan: 1 } } ] },
+  { q: '微信好友发来"在吗？"，你？', opts: [
+    { t: '假装没看见', p: { shekong: 2 } },
+    { t: '看见了但不想回', p: { bailan: 2 } },
+    { t: '秒回"在的，怎么了"', p: { taohao: 1 } },
+    { t: '如果是喜欢的人，心跳加速', p: { liana: 1 } },
+    { t: '回个"嗯"继续刷视频', p: { moyu: 1 } },
+    { t: '纠结半天怎么回，最后回个表情', p: { ganga: 1 } } ] },
+  { q: '被拉进一个全是陌生人的群，你？', opts: [
+    { t: '改备注、免打扰、隐身', p: { shekong: 2 } },
+    { t: '有人@我时尴尬到脚趾抠地', p: { ganga: 2 } },
+    { t: '潜水，谁也别想让我说话', p: { bailan: 1 } },
+    { t: '有人说话就捧场回两句', p: { taohao: 1 } },
+    { t: '偶尔冒泡，发个沙雕图', p: { moyu: 1 } },
+    { t: '观察群里有没有大佬可学', p: { juanwang: 1 } } ] },
+  { q: '生日当天没人记得，你？', opts: [
+    { t: '自己给自己买了个蛋糕', p: { emo: 2 } },
+    { t: '暗恋的人没祝福，更难受了', p: { liana: 2 } },
+    { t: '算了，大家都很忙', p: { taohao: 1 } },
+    { t: '明年生日屏蔽所有人', p: { baozao: 1 } },
+    { t: '无所谓，生日快乐是给别人的', p: { bailan: 1 } },
+    { t: '发条仅自己可见的朋友圈', p: { moyu: 1 } } ] },
+  { q: '有人给你介绍对象，你？', opts: [
+    { t: '尬笑：我最近挺忙的哈哈', p: { ganga: 2 } },
+    { t: '见陌生人不如让我去死', p: { shekong: 2 } },
+    { t: '先要照片看看', p: { liana: 1 } },
+    { t: '见就见呗，反正也没结果', p: { bailan: 1 } },
+    { t: '不好拒绝，硬着头皮加了微信', p: { taohao: 1 } },
+    { t: '现在搞钱要紧，不搞对象', p: { juanwang: 1 } } ] },
+  { q: '朋友请你帮忙搬家/砍一刀，你？', opts: [
+    { t: '都答应了，累死自己', p: { taohao: 2 } },
+    { t: '在吗？——不在。', p: { shekong: 1 } },
+    { t: '直接拒绝，不存在愧疚', p: { baozao: 1 } },
+    { t: '看心情，心情好帮，不好装死', p: { bailan: 1 } },
+    { t: '帮，但一边帮一边心里烦', p: { moyu: 1 } },
+    { t: '拒绝的话在嘴边滚了几圈又咽回去', p: { ganga: 1 } } ] },
+  // ===== 感情 =====
+  { q: '喜欢的人回消息慢，你？', opts: [
+    { t: '疯狂脑补：他是不是不爱我了', p: { liana: 2 } },
+    { t: '翻聊天记录，深夜emo', p: { emo: 2 } },
+    { t: '已读不回？拉黑警告', p: { baozao: 1 } },
+    { t: '无所谓，反正我也在摸鱼', p: { moyu: 1 } },
+    { t: '不敢发第二条，怕打扰', p: { shekong: 1 } },
+    { t: '爱回不回，睡觉', p: { bailan: 1 } } ] },
+  { q: '和对象吵架，你？', opts: [
+    { t: '吵完就后悔，但死要面子', p: { baozao: 2 } },
+    { t: '冷战，但自己哭了一晚上', p: { emo: 2 } },
+    { t: '先低头，怕关系凉了', p: { taohao: 1 } },
+    { t: '表面生气，心里等他哄', p: { liana: 1 } },
+    { t: '吵累了，睡一觉再说', p: { bailan: 1 } },
+    { t: '吵着吵着忘了为啥吵', p: { ganga: 1 } } ] },
+  { q: '暗恋对象突然官宣了，你？', opts: [
+    { t: '删掉聊天记录，歌单循环一星期', p: { emo: 2 } },
+    { t: '心碎但祝福，偷偷关注TA的动态', p: { liana: 2 } },
+    { t: '呵呵，祝你们幸福（咬牙切齿）', p: { baozao: 1 } },
+    { t: '化悲愤为食欲，吃顿好的', p: { ganfan: 1 } },
+    { t: '早猜到了，无所谓', p: { bailan: 1 } },
+    { t: '情场失意，搞事业', p: { juanwang: 1 } } ] },
+  { q: '你单身很久了，朋友问"咋还不找"，你？', opts: [
+    { t: '找对象不如找乐子', p: { bailan: 2 } },
+    { t: '社交圈就那么大，找谁去', p: { shekong: 2 } },
+    { t: '等我卷完这阵再说', p: { juanwang: 1 } },
+    { t: '随缘，缘分到了自然有', p: { moyu: 1 } },
+    { t: '我也想啊，可是……', p: { emo: 1 } },
+    { t: '怕耽误别人，还是算了', p: { taohao: 1 } } ] },
+  { q: '对象翻你手机，你？', opts: [
+    { t: '心里炸了：你不信任我？', p: { baozao: 2 } },
+    { t: '虽然没鬼，但莫名心虚', p: { ganga: 2 } },
+    { t: '随便翻，翻到算你赢', p: { bailan: 1 } },
+    { t: '主动递过去：随便看', p: { taohao: 1 } },
+    { t: '她翻我说明在乎我', p: { liana: 1 } },
+    { t: '无所谓，我手机比我人生还干净', p: { moyu: 1 } } ] },
+  { q: '深夜想给前任发消息，你？', opts: [
+    { t: '打了删删了打，最后发出去了', p: { liana: 2 } },
+    { t: '忍住了，但哭了一场', p: { emo: 2 } },
+    { t: '发了，然后秒后悔', p: { bailan: 1 } },
+    { t: '忍住，凭什么是我先低头', p: { baozao: 1 } },
+    { t: '刷到TA的朋友圈，划走', p: { moyu: 1 } },
+    { t: '点个外卖，前任哪有夜宵实在', p: { ganfan: 1 } } ] },
+  // ===== 生活日常 =====
+  { q: '闹钟响了，你？', opts: [
+    { t: '按掉，再睡五分钟（然后一小时）', p: { moyu: 2 } },
+    { t: '翘了，今天状态不好', p: { bailan: 2 } },
+    { t: '秒起，晨跑+学习', p: { juanwang: 2 } },
+    { t: '被吵醒，起床气拉满', p: { baozao: 1 } },
+    { t: '不想起，不想面对今天', p: { emo: 1 } },
+    { t: '再困也起，不能迟到', p: { taohao: 1 } } ] },
+  { q: '房间乱成一团，你？', opts: [
+    { t: '乱就乱吧，又没人看', p: { bailan: 2 } },
+    { t: '明天再收（明天复明天）', p: { moyu: 2 } },
+    { t: '收拾完还要给房间消毒', p: { juanwang: 1 } },
+    { t: '有人来之前才疯狂收拾', p: { ganga: 1 } },
+    { t: '妈要来检查？马上收拾', p: { taohao: 1 } },
+    { t: '收拾到一半，看着屋子叹气', p: { emo: 1 } } ] },
+  { q: '快递到了但懒得去拿，你？', opts: [
+    { t: '放三天再说', p: { bailan: 2 } },
+    { t: '拖到驿站关门', p: { moyu: 2 } },
+    { t: '马上去拿，怕快递员多等', p: { taohao: 1 } },
+    { t: '拿，但心里骂为什么不送货上门', p: { baozao: 1 } },
+    { t: '顺路拿，顺便规划好路线', p: { juanwang: 1 } },
+    { t: '拿完顺便买个吃的', p: { ganfan: 1 } } ] },
+  { q: '天气预报说降温，你？', opts: [
+    { t: '不加衣，冻着，硬扛', p: { bailan: 2 } },
+    { t: '多穿点，别让家人担心', p: { taohao: 1 } },
+    { t: '冷就冷吧，心更冷', p: { emo: 1 } },
+    { t: '提前备好暖宝宝和姜茶', p: { juanwang: 1 } },
+    { t: '看到预报，忘了，出门冻成狗', p: { moyu: 1 } },
+    { t: '什么破天气，又冷又潮', p: { baozao: 1 } } ] },
+  { q: '晚上 11 点你计划早睡，你？', opts: [
+    { t: '刷视频刷到凌晨两点', p: { moyu: 2 } },
+    { t: '早睡？明天再睡', p: { bailan: 2 } },
+    { t: '复盘今天，计划明天', p: { juanwang: 1 } },
+    { t: '躺床上想事情想到失眠', p: { emo: 1 } },
+    { t: '等TA回消息，等到天亮', p: { liana: 1 } },
+    { t: '睡前饿了，又点了个外卖', p: { ganfan: 1 } } ] },
+  { q: '发现家里蟑螂/虫子，你？', opts: [
+    { t: '抄起拖鞋就上', p: { baozao: 2 } },
+    { t: '它不动我不动，僵持到天亮', p: { shekong: 2 } },
+    { t: '尖叫一声，然后假装没发生', p: { ganga: 1 } },
+    { t: '眼不见为净，随它去吧', p: { bailan: 1 } },
+    { t: '不敢打，怕弄脏地板', p: { taohao: 1 } },
+    { t: '拍个照发群里再说', p: { moyu: 1 } } ] },
+  // ===== 网络冲浪 =====
+  { q: '评论区有人杠你，你？', opts: [
+    { t: '拉黑+举报+回怼三连', p: { baozao: 2 } },
+    { t: '杠就杠吧，懒得理', p: { bailan: 2 } },
+    { t: '回一句"你说得对"然后划走', p: { moyu: 1 } },
+    { t: '打了半天字，全删了', p: { shekong: 1 } },
+    { t: '摆事实讲道理，写小作文', p: { juanwang: 1 } },
+    { t: '发现回错了人，尴尬到删号', p: { ganga: 1 } } ] },
+  { q: '深夜刷到朋友上岸/暴富动态，你？', opts: [
+    { t: '破防，关手机，emo一晚', p: { emo: 2 } },
+    { t: '连夜查怎么搞钱', p: { juanwang: 2 } },
+    { t: '凭什么不是我', p: { baozao: 1 } },
+    { t: '划走，继续躺', p: { bailan: 1 } },
+    { t: '酸了一下，继续刷视频', p: { moyu: 1 } },
+    { t: '点个外卖安慰自己', p: { ganfan: 1 } } ] },
+  { q: '你的帖子/动态没人点赞，你？', opts: [
+    { t: '默默删掉，觉得没人懂我', p: { emo: 2 } },
+    { t: '是不是我说错话了', p: { ganga: 2 } },
+    { t: '无所谓，写给未来的自己', p: { bailan: 1 } },
+    { t: '主动点赞自己的（心虚）', p: { taohao: 1 } },
+    { t: '发完就忘了', p: { moyu: 1 } },
+    { t: 'TA没点赞，是不是不在乎我', p: { liana: 1 } } ] },
+  { q: '刷到一个"人生建议"视频，你？', opts: [
+    { t: '收藏+截图+记笔记', p: { juanwang: 2 } },
+    { t: '收藏=学会，然后吃灰', p: { bailan: 2 } },
+    { t: '看完就划走', p: { moyu: 1 } },
+    { t: '看了更焦虑了', p: { emo: 1 } },
+    { t: '建议很好，下次别建议了', p: { baozao: 1 } },
+    { t: '转给需要的朋友', p: { taohao: 1 } } ] },
+  { q: '网购东西到了发现货不对板，你？', opts: [
+    { t: '差评+客服开喷', p: { baozao: 2 } },
+    { t: '算了，懒得退', p: { bailan: 2 } },
+    { t: '给了好评，怕卖家为难', p: { taohao: 1 } },
+    { t: '拖着拖着过了退货期', p: { moyu: 1 } },
+    { t: '认真对比，写长评帮别人避雷', p: { juanwang: 1 } },
+    { t: '退货要打电话，还是算了', p: { ganga: 1 } } ] },
+  { q: '朋友圈刷到前任秀恩爱，你？', opts: [
+    { t: '截图给闺蜜，一起emo', p: { emo: 2 } },
+    { t: '手滑点了个赞，想死', p: { liana: 2 } },
+    { t: '屏蔽，眼不见心不烦', p: { baozao: 1 } },
+    { t: '祝福，与我无关', p: { bailan: 1 } },
+    { t: '划走，继续摸鱼', p: { moyu: 1 } },
+    { t: '饿了，先吃饭', p: { ganfan: 1 } } ] },
+  // ===== 深夜/独处 =====
+  { q: '深夜 2 点你还没睡，在干嘛？', opts: [
+    { t: '想人生，想过去，想未来', p: { emo: 2 } },
+    { t: '刷视频，越刷越清醒', p: { moyu: 2 } },
+    { t: '翻TA的社交动态', p: { liana: 1 } },
+    { t: '学习/工作到凌晨', p: { juanwang: 1 } },
+    { t: '玩手机但脑子已经关机', p: { bailan: 1 } },
+    { t: '饿了，翻外卖 app', p: { ganfan: 1 } } ] },
+  { q: '一个人吃火锅/看电影，你？', opts: [
+    { t: '爽，不用迁就别人', p: { bailan: 2 } },
+    { t: '有点孤独，但习惯了', p: { emo: 2 } },
+    { t: '边吃边刷剧，美滋滋', p: { moyu: 1 } },
+    { t: '比跟人聚餐轻松一百倍', p: { shekong: 1 } },
+    { t: '一个人吃更香', p: { ganfan: 1 } },
+    { t: '会有点愧疚：是不是该陪朋友', p: { taohao: 1 } } ] },
+  { q: '深夜突然想起白天说错的一句话，你？', opts: [
+    { t: '脚趾抠地，辗转反侧', p: { ganga: 2 } },
+    { t: '越想越emo，睡不着', p: { emo: 2 } },
+    { t: '想三秒，然后继续睡', p: { bailan: 1 } },
+    { t: '纠结要不要发消息解释', p: { taohao: 1 } },
+    { t: '白天说的啥？早忘了', p: { moyu: 1 } },
+    { t: '我没错，是他玻璃心', p: { baozao: 1 } } ] },
+  { q: '深夜网抑云，你听什么歌？', opts: [
+    { t: '伤感情歌循环，边听边哭', p: { emo: 2 } },
+    { t: '白噪音，助眠', p: { bailan: 1 } },
+    { t: '知识付费/播客', p: { juanwang: 1 } },
+    { t: '洗脑神曲，嗨起来', p: { moyu: 1 } },
+    { t: '那些年我们一起听的歌', p: { liana: 1 } },
+    { t: '下饭神曲', p: { ganfan: 1 } } ] },
+  { q: '失眠到天亮，你？', opts: [
+    { t: '看着天亮，觉得世界只剩自己', p: { emo: 2 } },
+    { t: '请一天假，补觉', p: { bailan: 2 } },
+    { t: '干脆起来背单词', p: { juanwang: 1 } },
+    { t: '数羊数到怀疑人生', p: { moyu: 1 } },
+    { t: '越想越气，睡不着', p: { baozao: 1 } },
+    { t: '起床吃个早餐，失眠？不存在', p: { ganfan: 1 } } ] },
+  { q: '周末一个人在家，你？', opts: [
+    { t: '躺尸一整天，爽', p: { bailan: 2 } },
+    { t: '刷视频刷到天黑', p: { moyu: 2 } },
+    { t: '安排学习计划，充实自己', p: { juanwang: 1 } },
+    { t: '有点孤独，点开通讯录又放下', p: { emo: 1 } },
+    { t: '太爽了，终于不用社交', p: { shekong: 1 } },
+    { t: '研究新菜/探店', p: { ganfan: 1 } } ] },
+  // ===== 金钱/消费 =====
+  { q: '发工资那天，你？', opts: [
+    { t: '先吃顿好的庆祝', p: { ganfan: 2 } },
+    { t: '买点小东西犒劳自己', p: { moyu: 2 } },
+    { t: '存起来/理财', p: { juanwang: 1 } },
+    { t: '花呗信用卡先还了', p: { bailan: 1 } },
+    { t: '给家里打点钱', p: { taohao: 1 } },
+    { t: '看着余额，一阵空虚', p: { emo: 1 } } ] },
+  { q: '月底还剩 100 块，你？', opts: [
+    { t: '花呗顶上，下月再说', p: { bailan: 2 } },
+    { t: '100 块也要吃好喝好', p: { ganfan: 2 } },
+    { t: '精打细算，每一分都规划', p: { juanwang: 1 } },
+    { t: '不知不觉就花光了', p: { moyu: 1 } },
+    { t: '唉，穷且丧', p: { emo: 1 } },
+    { t: '朋友借钱，还是给了', p: { taohao: 1 } } ] },
+  { q: '朋友找你借钱，你？', opts: [
+    { t: '借了，不好意思不借', p: { taohao: 2 } },
+    { t: '我也穷，装死', p: { bailan: 1 } },
+    { t: '借可以，写借条', p: { baozao: 1 } },
+    { t: '假装没看到消息', p: { moyu: 1 } },
+    { t: '问清楚用途再决定', p: { juanwang: 1 } },
+    { t: '不知道怎么拒绝，拖到对方不问', p: { shekong: 1 } } ] },
+  { q: '想买的东西有点贵，你？', opts: [
+    { t: '买！人生苦短', p: { bailan: 2 } },
+    { t: '忍，存钱，等打折', p: { juanwang: 2 } },
+    { t: '加购物车，然后忘了', p: { moyu: 1 } },
+    { t: '吃的可以贵，别的再说', p: { ganfan: 1 } },
+    { t: '先问问家人意见', p: { taohao: 1 } },
+    { t: '买了也开心不起来', p: { emo: 1 } } ] },
+  { q: '中了 500 块彩票，你？', opts: [
+    { t: '立刻吃顿大的', p: { ganfan: 2 } },
+    { t: '躺平三天，奖励自己', p: { bailan: 2 } },
+    { t: '存起来，钱生钱', p: { juanwang: 1 } },
+    { t: '买个游戏/会员', p: { moyu: 1 } },
+    { t: '请朋友吃饭', p: { taohao: 1 } },
+    { t: '给TA买个小礼物', p: { liana: 1 } } ] },
+  { q: '看到同龄人买房/买车，你？', opts: [
+    { t: '焦虑，立刻开始搞钱计划', p: { juanwang: 2 } },
+    { t: '破防了，觉得差距好大', p: { emo: 2 } },
+    { t: '人家的人家，我的我的', p: { bailan: 1 } },
+    { t: '酸一下，继续过我的', p: { moyu: 1 } },
+    { t: '凭什么？算了，命', p: { baozao: 1 } },
+    { t: '爸妈会不会失望', p: { taohao: 1 } } ] },
+  // ===== 家庭/关系 =====
+  { q: '爸妈打电话催婚/催稳定，你？', opts: [
+    { t: '嗯嗯啊啊，挂了就忘', p: { bailan: 2 } },
+    { t: '挂了电话，心里酸酸的', p: { emo: 2 } },
+    { t: '又催，烦死了', p: { baozao: 1 } },
+    { t: '不敢接电话', p: { shekong: 1 } },
+    { t: '好好好，我抓紧', p: { taohao: 1 } },
+    { t: '一边敷衍一边刷手机', p: { moyu: 1 } } ] },
+  { q: '家里亲戚问"工资多少"，你？', opts: [
+    { t: '三千，够活', p: { moyu: 2 } },
+    { t: '不到十万', p: { bailan: 2 } },
+    { t: '尬笑，转移话题', p: { ganga: 1 } },
+    { t: '关你屁事（心里说）', p: { baozao: 1 } },
+    { t: '还行还行，您孩子呢', p: { taohao: 1 } },
+    { t: '报个大概，暗暗较劲', p: { juanwang: 1 } } ] },
+  { q: '父母生病了，你？', opts: [
+    { t: '立刻请假回去照顾', p: { taohao: 2 } },
+    { t: '一边照顾一边查最优方案', p: { juanwang: 2 } },
+    { t: '半夜偷偷哭，怕他们担心', p: { emo: 1 } },
+    { t: '慌了，但假装镇定', p: { bailan: 1 } },
+    { t: '不知道怎么开口关心', p: { shekong: 1 } },
+    { t: '急得团团转，帮不上忙', p: { moyu: 1 } } ] },
+  { q: '家人让你考公/考编，你？', opts: [
+    { t: '好的，我去考', p: { taohao: 2 } },
+    { t: '我不，我要自由', p: { bailan: 2 } },
+    { t: '考！上岸才是王道', p: { juanwang: 1 } },
+    { t: '不想考，但不敢顶嘴', p: { emo: 1 } },
+    { t: '别管我行不行', p: { baozao: 1 } },
+    { t: '报名了，裸考', p: { moyu: 1 } } ] },
+  { q: '过年回家，亲戚连环问，你？', opts: [
+    { t: '微笑+嗯嗯+装聋', p: { bailan: 2 } },
+    { t: '尬到想钻地缝', p: { ganga: 2 } },
+    { t: '躲房间里不出来', p: { shekong: 1 } },
+    { t: '手机救我狗命', p: { moyu: 1 } },
+    { t: '挨个回答，礼貌满分', p: { taohao: 1 } },
+    { t: '再问就掀桌（心里）', p: { baozao: 1 } } ] },
+  { q: '看到爸妈头发白了，你？', opts: [
+    { t: '心里一紧，鼻子酸', p: { emo: 2 } },
+    { t: '决定努力让爸妈过好日子', p: { juanwang: 2 } },
+    { t: '想多陪陪他们，但力不从心', p: { bailan: 1 } },
+    { t: '给爸妈买补品', p: { taohao: 1 } },
+    { t: '带爸妈吃顿好的', p: { ganfan: 1 } },
+    { t: '愣住，然后假装没看见', p: { moyu: 1 } } ] },
+  // ===== 心态/自我 =====
+  { q: '定了个新年计划，现在？', opts: [
+    { t: '早忘了', p: { bailan: 2 } },
+    { t: '完成了 1/10，其余吃灰', p: { moyu: 2 } },
+    { t: '超额完成，还加了目标', p: { juanwang: 2 } },
+    { t: '没完成，又一年过去了', p: { emo: 1 } },
+    { t: '计划是给别人看的', p: { taohao: 1 } },
+    { t: '目标：吃遍全城美食，达标', p: { ganfan: 1 } } ] },
+  { q: '被人说"你变了"，你？', opts: [
+    { t: '偷偷想了一晚上', p: { emo: 2 } },
+    { t: '变就变了，谁不变', p: { bailan: 2 } },
+    { t: '尴尬，不知道接什么', p: { ganga: 1 } },
+    { t: '变你个头', p: { baozao: 1 } },
+    { t: '我变了吗？我改', p: { taohao: 1 } },
+    { t: '变强了，谢谢', p: { juanwang: 1 } } ] },
+  { q: '看到"自律打卡 100 天"挑战，你？', opts: [
+    { t: '立刻报名，必须完成', p: { juanwang: 2 } },
+    { t: '收藏，然后三天打鱼', p: { moyu: 2 } },
+    { t: '打卡？打工人不打卡', p: { bailan: 1 } },
+    { t: '我也想自律，但好难', p: { emo: 1 } },
+    { t: '拉朋友一起，互相监督', p: { taohao: 1 } },
+    { t: '打卡吃饭可以，别的算了', p: { ganfan: 1 } } ] },
+  { q: '遇到难题，你第一反应？', opts: [
+    { t: '查资料，拆解，搞定它', p: { juanwang: 2 } },
+    { t: '先放着，说不定自己会好', p: { bailan: 2 } },
+    { t: '烦！怎么又是我', p: { baozao: 1 } },
+    { t: '拖到 deadline 再爆发', p: { moyu: 1 } },
+    { t: '我好没用（先自我怀疑）', p: { emo: 1 } },
+    { t: '不敢问人，自己硬扛', p: { shekong: 1 } } ] },
+  { q: '被夸"你真厉害"，你？', opts: [
+    { t: '没有没有，运气好', p: { ganga: 2 } },
+    { t: '谢谢，下次继续努力', p: { taohao: 2 } },
+    { t: '客气客气，躺赢', p: { bailan: 1 } },
+    { t: '那是，深藏不露', p: { moyu: 1 } },
+    { t: '脸红，想躲', p: { shekong: 1 } },
+    { t: '还行，还有提升空间', p: { juanwang: 1 } } ] },
+  { q: '你的口头禅是？', opts: [
+    { t: '算了/无所谓/都行', p: { bailan: 2 } },
+    { t: '摸鱼/划水/摆', p: { moyu: 2 } },
+    { t: '服了/绝了/什么鬼', p: { baozao: 1 } },
+    { t: '唉……', p: { emo: 1 } },
+    { t: '好的/没问题/马上', p: { taohao: 1 } },
+    { t: '饿死我了/吃什么', p: { ganfan: 1 } } ] },
+  // ===== 饭局/娱乐 =====
+  { q: '聚餐点菜，你？', opts: [
+    { t: '我来点！我知道哪家好吃', p: { ganfan: 2 } },
+    { t: '你们点，我随意', p: { taohao: 2 } },
+    { t: '随便，能吃饱就行', p: { bailan: 1 } },
+    { t: '看手机，点啥吃啥', p: { moyu: 1 } },
+    { t: '不主动点，怕大家不爱吃', p: { shekong: 1 } },
+    { t: '点个辣的，不辣不欢', p: { baozao: 1 } } ] },
+  { q: 'KTV 里话筒递到你面前，你？', opts: [
+    { t: '不了不了，你们唱', p: { shekong: 2 } },
+    { t: '被迫唱，跑调，想死', p: { ganga: 2 } },
+    { t: '点首拿手的，深藏不露', p: { moyu: 1 } },
+    { t: '唱！吼一嗓子解压', p: { baozao: 1 } },
+    { t: '唱两句，然后交话筒', p: { bailan: 1 } },
+    { t: '先吃点果盘再说', p: { ganfan: 1 } } ] },
+  { q: '团建/聚会要 AA，你？', opts: [
+    { t: '算清楚，一分不多', p: { bailan: 2 } },
+    { t: '主动多出点，不好意思', p: { taohao: 2 } },
+    { t: '群收款，闭眼转', p: { moyu: 1 } },
+    { t: '记账，精确到分', p: { juanwang: 1 } },
+    { t: '吃得好就值', p: { ganfan: 1 } },
+    { t: '默默转账，不参与讨论', p: { shekong: 1 } } ] },
+  { q: '周末朋友约你爬山/徒步，你？', opts: [
+    { t: '爬山？不如躺着', p: { bailan: 2 } },
+    { t: '看天气，天气好就去', p: { moyu: 2 } },
+    { t: '去！顺便锻炼身体', p: { juanwang: 1 } },
+    { t: '山顶有农家乐就去', p: { ganfan: 1 } },
+    { t: '人多吗？人多算了', p: { shekong: 1 } },
+    { t: 'TA去我就去', p: { liana: 1 } } ] },
+  { q: '玩游戏输了，你？', opts: [
+    { t: '再来！我不信', p: { baozao: 2 } },
+    { t: '输了就输了，卸载', p: { bailan: 2 } },
+    { t: '边输边刷手机', p: { moyu: 1 } },
+    { t: '研究攻略，复盘上分', p: { juanwang: 1 } },
+    { t: '拖队友后腿，尴尬道歉', p: { ganga: 1 } },
+    { t: '都怪我，我的锅', p: { taohao: 1 } } ] },
+  { q: '深夜点外卖，你选？', opts: [
+    { t: '烧烤炸鸡，快乐加倍', p: { ganfan: 2 } },
+    { t: '随便点个，边刷剧边吃', p: { moyu: 2 } },
+    { t: '点个贵的，犒劳委屈的自己', p: { emo: 1 } },
+    { t: '泡面，速战速决', p: { bailan: 1 } },
+    { t: '看看有没有满减，省一点', p: { taohao: 1 } },
+    { t: '健康轻食，不能胖', p: { juanwang: 1 } } ] },
 ];
 let quizStep = 0;
 let quizScore = {};
+function saveQuizProgress() {
+  try { localStorage.setItem('pofang_quiz', JSON.stringify({ step: quizStep, score: quizScore })); } catch (e) {}
+}
+function clearQuizProgress() {
+  try { localStorage.removeItem('pofang_quiz'); } catch (e) {}
+}
 function renderQuiz() {
-  if (quizStep >= QUIZ.length) return showPersonResult();
+  if (quizStep >= QUIZ.length) { clearQuizProgress(); return showPersonResult(); }
+  const pos = document.getElementById('quizPos');
+  if (pos) pos.textContent = (quizStep + 1) + '/' + QUIZ.length;
+  const bar = document.getElementById('quizBar');
+  if (bar) bar.style.width = (quizStep / QUIZ.length * 100) + '%';
   const q = QUIZ[quizStep];
   document.getElementById('quizQ').textContent = 'Q' + (quizStep + 1) + '. ' + q.q;
   const opts = document.getElementById('quizOpts');
@@ -1285,11 +1691,23 @@ function renderQuiz() {
     b.onclick = () => {
       for (const k in o.p) quizScore[k] = (quizScore[k] || 0) + o.p[k];
       quizStep++;
+      saveQuizProgress();
       renderQuiz();
     };
     opts.appendChild(b);
   });
 }
+// 断点续答：中途刷新/关闭后从上次进度继续
+(function restoreQuiz() {
+  try {
+    const saved = JSON.parse(localStorage.getItem('pofang_quiz') || 'null');
+    if (saved && saved.step > 0 && saved.step < QUIZ.length) {
+      quizStep = saved.step;
+      quizScore = saved.score || {};
+      setTimeout(() => toast('📖 已从上次进度恢复（第 ' + (quizStep + 1) + '/' + QUIZ.length + ' 题）'), 300);
+    }
+  } catch (e) {}
+})();
 function showPersonResult() {
   const opts = document.getElementById('quizOpts');
   opts.innerHTML = '';
@@ -1322,6 +1740,7 @@ function showPersonResult() {
 function restartQuiz() {
   quizStep = 0;
   quizScore = {};
+  clearQuizProgress();
   document.getElementById('quizResult').innerHTML = '';
   renderQuiz();
 }
